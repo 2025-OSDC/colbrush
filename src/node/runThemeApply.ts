@@ -21,7 +21,7 @@ export async function runThemeApply(cssPath: string) {
         const cleanValue = value.trim();
         const scale = /\d+$/.test(cleanKey);
         const rich: VariableRich = {
-            base: value,
+            base: cleanValue,
             scale,
         };
         variables[cleanKey] = rich;
