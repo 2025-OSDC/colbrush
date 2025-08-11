@@ -1,0 +1,34 @@
+{
+    "themes": [
+        {
+            "vision": "deuteranopia",
+            "theme": "deuteranopia",
+            "variables": {
+                "--color-primary-500": "#7fe4c1",
+                "--color-secondary-yellow": "#fdfa91",
+                " --color-secondary-blue": "#005880",
+                " --color-default-gray-500": "#c3c3c3"
+            }
+        },
+        {
+            "vision": "protanopia",
+            "theme": "protanopia",
+            "variables": {
+                "--color-primary-500": "#7fe4c1",
+                "--color-secondary-yellow": "#fdfa91",
+                " --color-secondary-blue": "#005880",
+                " --color-default-gray-500": "#c3c3c3"
+            }
+        },
+        {
+            "vision": "tritanopia",
+            "theme": "tritanopia",
+            "variables": {
+                "--color-primary-500": "#7fe4c1",
+                "--color-secondary-yellow": "#fdfa91",
+                " --color-secondary-blue": "#005880",
+                " --color-default-gray-500": "#c3c3c3"
+            }
+        }
+    ]
+}
