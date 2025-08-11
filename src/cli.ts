@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
-import { applyThemes } from './node/applyThemes.js';
+import { applyThemes } from './node/applyThemes';
 
 type Vision = 'protanopia' | 'deuteranopia' | 'tritanopia' | 'achromatopsia';
 type VariableInput = Record<
@@ -64,8 +64,8 @@ async function runOnce(
     const inputs = Array.isArray(payload?.themes)
         ? payload.themes
         : Array.isArray(payload)
-        ? payload
-        : [payload];
+          ? payload
+          : [payload];
     for (const input of inputs) await applyThemes(input, cssPath);
     console.log(`✅ applied ${inputs.length} theme(s) to ${cssPath}`);
 }
@@ -77,16 +77,6 @@ async function main() {
     const config = asString(flags.config, 'cb.theme.json');
     const css = asString(flags.css, 'src/index.css');
     const useDefault = !!flags['use-default'];
-
-    if (cmd === 'init') {
-        if (!fs.existsSync(config)) {
-            fs.writeFileSync(config, JSON.stringify(DEFAULT_PAYLOAD, null, 2));
-            console.log(`✅ created ${config}`);
-        } else {
-            console.log(`ℹ️ ${config} already exists`);
-        }
-        process.exit(0);
-    }
 
     if (cmd === 'apply') {
         await runOnce(config, css, useDefault);
