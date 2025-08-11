@@ -34,7 +34,7 @@
         "dist"
     ],
     "bin": {
-        "cb-theme": "./dist/cli.cjs"
+        "cb-theme": "./dist/cli.js"
     },
     "sideEffects": false,
     "scripts": {

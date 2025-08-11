@@ -6,7 +6,6 @@ export const THEMES = [
     'protanopia',
     'deuteranopia',
     'tritanopia',
-    'achromatopsia',
 ] as const;
 
 export type ThemeType = (typeof THEMES)[number];

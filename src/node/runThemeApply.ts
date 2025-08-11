@@ -27,12 +27,7 @@ export async function runThemeApply(cssPath: string) {
         variables[cleanKey] = rich;
     }
 
-    const visions: Vision[] = [
-        'deuteranopia',
-        'protanopia',
-        'tritanopia',
-        'achromatopsia',
-    ];
+    const visions: Vision[] = ['deuteranopia', 'protanopia', 'tritanopia'];
 
     // 여기에 제가 추후에 함수 추가 하면 될 듯 싶습니다!
     //     variables = {

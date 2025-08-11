@@ -1,8 +1,7 @@
 export type Vision =
-    | 'protanopia'
-    | 'deuteranopia'
-    | 'tritanopia'
-    | 'achromatopsia';
+    | 'protanopia' // 적색맹 (빨강 계열 인식 불가)
+    | 'deuteranopia' // 녹색맹 (초록 계열 인식 불가)
+    | 'tritanopia'; // 청색맹 (파랑 계열 인식 불가)
 
 export interface ThemeGenInput {
     vision: Vision;

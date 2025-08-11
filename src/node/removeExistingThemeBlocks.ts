@@ -1,12 +1,7 @@
 import { Vision } from '../types/types';
 
 export function removeExistingThemeBlocks(content: string): string {
-    const visions = [
-        'protanopia',
-        'deuteranopia',
-        'tritanopia',
-        'achromatopsia',
-    ];
+    const visions = ['protanopia', 'deuteranopia', 'tritanopia'];
     let cleaned = content;
     for (const vision of visions) {
         const pattern = new RegExp(
