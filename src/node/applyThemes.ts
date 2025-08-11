@@ -2,42 +2,11 @@ import fs from 'node:fs';
 import postcss, { Root, Rule } from 'postcss';
 import safeParser from 'postcss-safe-parser';
 import { buildScaleFromBaseHex } from '../utils/core/colorScale.js';
-
-type Vision = 'protanopia' | 'deuteranopia' | 'tritanopia' | 'achromatopsia';
-
-export type ThemeType = Vision | 'default' | 'system';
-
-type VariableSimple = string; // "#dd3f21"
-interface VariableRich {
-    base: string; // HEX
-    scale: boolean; // true=스케일 생성, false=단일 변수
-    keys?: string[]; // 스케일 키셋(선택)
-    anchor?: string; // "500" 등 (현재 로직에선 anchor는 참고용)
-}
-type VariableInput = Record<string, VariableSimple | VariableRich>;
-
-interface ThemeGenInput {
-    vision: Vision; // 색각 유형
-    theme: string; // data-theme 이름 (예: "tritanopia")
-    variables: VariableInput; // {"--primary-500":"#dd3f21", "--accent":{base:"#0088ff", scale:false}}
-}
+import { variationRegex } from '../constants/regex.js';
+import { ThemeGenInput, VariableRich, Vision } from '../types/types.js';
+import { DEFAULT_KEYS } from '../constants/variation.js';
 
 const CSS_PATH = 'src/index.css';
-// key는 50|100|...|900 같은 단계 숫자만 허용
-const VAR_RE = /^--(.+?)-(50|100|200|300|400|500|600|700|800|900)$/i;
-
-const DEFAULT_KEYS = [
-    '50',
-    '100',
-    '200',
-    '300',
-    '400',
-    '500',
-    '600',
-    '700',
-    '800',
-    '900',
-] as const;
 
 // (필요 시) 색맹 변환 자리에 연결하는 함수. 지금은 패스스루.
 function toThemeColor(hex: string, _vision: Vision): string {
@@ -55,7 +24,7 @@ function getExistingKeysForToken(root: Root, token: string): string[] {
     const keys = new Set<string>();
     root.walkDecls((d) => {
         if (!d.prop.startsWith('--')) return;
-        const m = d.prop.match(VAR_RE);
+        const m = d.prop.match(variationRegex);
         if (!m) return;
         const [, t, k] = m;
         if (t === token) keys.add(k);
@@ -87,17 +56,15 @@ function upsertBlock(root: Root, selector: string, kv: Record<string, string>) {
 // 메인: 입력을 받아 [data-theme='...']에 반영
 export function applyThemes(input: ThemeGenInput, cssPath = CSS_PATH) {
     const root = loadRoot(cssPath);
-    const selector = `[data-theme='${input.theme}']`;
+    const selector = `[data-theme='${input.vision}']`;
     const varsForTheme: Record<string, string> = {};
 
     for (const [varName, val] of Object.entries(input.variables)) {
         // 값 해석
         const rich: VariableRich =
-            typeof val === 'string'
-                ? inferRich(varName, val) // 간단값 → 규칙에 따라 scale 여부 자동 추론
-                : val;
+            typeof val === 'string' ? inferRich(varName, val) : val;
 
-        const m = varName.match(VAR_RE);
+        const m = varName.match(variationRegex);
         const isPattern = !!m;
 
         if (isPattern) {
@@ -135,12 +102,12 @@ export function applyThemes(input: ThemeGenInput, cssPath = CSS_PATH) {
     // 블록 upsert 후 저장
     upsertBlock(root, selector, varsForTheme);
     fs.writeFileSync(cssPath, root.toString(), 'utf8');
-    console.log(`✅ [${input.theme}] theme updated in ${cssPath}`);
+    console.log(`✅ [${input.vision}] theme updated in ${cssPath}`);
 }
 
 // 간단 값 전달 시 규칙: "--토큰-숫자"면 기본 scale=true, 아니면 false
 function inferRich(varName: string, baseHex: string): VariableRich {
-    return VAR_RE.test(varName)
+    return variationRegex.test(varName)
         ? { base: baseHex, scale: true }
         : { base: baseHex, scale: false };
 }

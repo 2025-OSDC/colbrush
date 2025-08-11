@@ -33,9 +33,12 @@
     "files": [
         "dist"
     ],
+    "bin": {
+        "cb-theme": "./dist/cli.cjs"
+    },
     "sideEffects": false,
     "scripts": {
-        "build": "tsup src/index.browser.ts src/index.node.ts --format esm --dts",
+        "build": "tsup src/index.browser.ts src/index.node.ts src/cli.ts --format esm,cjs --dts",
         "dev": "tsup src/index.ts --watch",
         "test": "jest --passWithNoTests",
         "prepublishOnly": "pnpm build"

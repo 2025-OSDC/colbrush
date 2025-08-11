@@ -1,102 +1,44 @@
 #!/usr/bin/env node
-import fs from 'node:fs';
-import { applyThemes } from './node/applyThemes';
-
-type Vision = 'protanopia' | 'deuteranopia' | 'tritanopia' | 'achromatopsia';
-type VariableInput = Record<
-    string,
-    string | { base: string; scale: boolean; keys?: string[]; anchor?: string }
->;
-interface ThemeGenInput {
-    vision: Vision;
-    theme: string;
-    variables: VariableInput;
-}
-
-const DEFAULT_PAYLOAD: { themes: ThemeGenInput[] } = {
-    themes: [
-        {
-            vision: 'deuteranopia',
-            theme: 'deuteranopia',
-            variables: {
-                '--color-primary-500': '#7fe4c1',
-                '--color-secondary-yellow': '#fdfa91',
-                '--color-secondary-blue': '#005880',
-                '--color-default-gray-500': '#c3c3c3',
-            },
-        },
-    ],
-};
-
-type Flags = Record<string, string | boolean | string[]> & { _: string[] };
-
-function parseFlags(argv: readonly string[] = process.argv.slice(2)): Flags {
-    const out: Flags = { _: [] };
-    for (const s of argv) {
-        const m = /^--([^=]+)=(.*)$/.exec(s);
-        if (m) out[m[1]] = m[2];
-        else if (s.startsWith('--')) out[s.slice(2)] = true;
-        else out._.push(s);
-    }
-    return out;
-}
-
-function asString(v: unknown, fallback: string): string {
-    return typeof v === 'string' ? v : fallback;
-}
-
-function loadPayload(configPath?: string, useDefault?: boolean) {
-    if (useDefault) return DEFAULT_PAYLOAD;
-    if (!configPath || !fs.existsSync(configPath)) {
-        throw new Error(
-            `Config not found: ${configPath}. (use --use-default to use built-in sample)`
-        );
-    }
-    return JSON.parse(fs.readFileSync(configPath, 'utf8'));
-}
-
-async function runOnce(
-    configPath: string,
-    cssPath: string,
-    useDefault: boolean
-) {
-    const payload = loadPayload(configPath, useDefault);
-    const inputs = Array.isArray(payload?.themes)
-        ? payload.themes
-        : Array.isArray(payload)
-          ? payload
-          : [payload];
-    for (const input of inputs) await applyThemes(input, cssPath);
-    console.log(`✅ applied ${inputs.length} theme(s) to ${cssPath}`);
-}
+import parseFlags from './node/parseFlags.js';
+import { runThemeApply } from './node/runThemeApply.js';
 
 async function main() {
     const flags = parseFlags();
-    const cmd = (flags._[0] ?? 'apply') as 'init' | 'apply' | 'watch';
+    const cmd = (flags._[0] ?? 'apply') as 'watch' | 'generate';
+    const cssPath = typeof flags.css === 'string' ? flags.css : 'src/index.css';
 
-    const config = asString(flags.config, 'cb.theme.json');
-    const css = asString(flags.css, 'src/index.css');
-    const useDefault = !!flags['use-default'];
-
-    if (cmd === 'apply') {
-        await runOnce(config, css, useDefault);
+    if (cmd === 'generate') {
+        await runThemeApply(cssPath);
         process.exit(0);
     }
 
     if (cmd === 'watch') {
         const { default: chokidar } = await import('chokidar');
-        const react = async () => await runOnce(config, css, useDefault);
+
+        const react = async () => {
+            try {
+                await runThemeApply(cssPath);
+            } catch (e) {
+                console.error('❌ 적용 중 오류 발생:', e);
+            }
+        };
+
         await react();
-        chokidar.watch(config, { ignoreInitial: true }).on('all', react);
+
+        // CSS 파일을 감시 대상으로 설정
+        chokidar.watch(cssPath, { ignoreInitial: true }).on('change', react);
+
         return;
     }
 
-    console.log(`Usage:
-  cb-theme init
-  cb-theme apply --config=cb.theme.json --css=src/index.css
-  cb-theme apply --use-default --css=src/index.css
-  cb-theme watch --config=cb.theme.json --css=src/index.css
-  cb-theme watch --use-default --css=src/index.css`);
+    console.log(`사용 방법:
+    - cb-theme generate [--css=src/index.css]
+        CSS 파일에서 색상 변수들을 추출하고, 색맹 테마를 자동 생성하여 같은 CSS 파일에 적용합니다.
+        (기본 경로는 src/index.css)
+
+    - cb-theme watch [--css=src/index.css]
+        설정 파일 변경을 감지하여 실시간으로 테마를 적용합니다.
+`);
     process.exit(1);
 }
 
