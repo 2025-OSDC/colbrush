@@ -30,12 +30,8 @@
             ]
         }
     },
-    "bin": {
-        "cb-theme": "./bin/cb-theme.mjs"
-    },
     "files": [
-        "dist",
-        "bin"
+        "dist"
     ],
     "sideEffects": false,
     "scripts": {
