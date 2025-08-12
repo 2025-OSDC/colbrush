@@ -41,3 +41,12 @@ export type ScaleKeys =
     | '900';
 
 export type Scale = Record<ScaleKeys, string>;
+
+export interface ColorTransformOutput {
+    themes: ThemeGenInput[];
+}
+
+// 색상 변환 알고리즘 인터페이스
+export interface ColorTransformAlgorithm {
+    transformColors(originalColors: VariableInput): Promise<ColorTransformOutput>;
+}
