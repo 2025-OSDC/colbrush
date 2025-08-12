@@ -10,5 +10,4 @@ export {
     prefersReducedMotion,
 } from './runtime/applyThemes.js';
 
-export * from './utils/colorBlindSimulation.js';
 export { buildScaleFromBaseHex } from './utils/core/colorScale.js';
