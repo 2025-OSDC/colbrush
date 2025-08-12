@@ -1,8 +1,34 @@
 import { variableRegex } from '../constants/regex';
 import { VariableRich, Vision, VariableInput } from '../types/types';
 import { applyThemes } from './applyThemes';
+import { requestColorTransformation } from './colorTransform';
 import fs from 'node:fs';
 import { removeExistingThemeBlocks } from './removeExistingThemeBlocks';
+
+// 흑백 색상 감지 함수
+function isBlackOrWhite(hexColor: string): boolean {
+    const hex = hexColor.toLowerCase().replace('#', '');
+    const fullHex = hex.length === 3 ? 
+        hex.split('').map(char => char + char).join('') : hex;
+    
+    const r = parseInt(fullHex.substr(0, 2), 16);
+    const g = parseInt(fullHex.substr(2, 2), 16);
+    const b = parseInt(fullHex.substr(4, 2), 16);
+    
+    const isWhite = r >= 250 && g >= 250 && b >= 250;
+    const isBlack = r <= 10 && g <= 10 && b <= 10;
+    
+    return isWhite || isBlack;
+}
+
+// scale 값 계산 함수
+function calculateScale(varName: string, hexColor: string): boolean {
+    if (isBlackOrWhite(hexColor)) {
+        return false;
+    }
+    
+    return /\d+$/.test(varName);
+}
 
 export async function runThemeApply(cssPath: string) {
     if (!fs.existsSync(cssPath)) {
@@ -19,7 +45,8 @@ export async function runThemeApply(cssPath: string) {
 
         const cleanKey = key.trim();
         const cleanValue = value.trim();
-        const scale = /\d+$/.test(cleanKey);
+        
+        const scale = calculateScale(cleanKey, cleanValue);
         const rich: VariableRich = {
             base: cleanValue,
             scale,
@@ -28,26 +55,24 @@ export async function runThemeApply(cssPath: string) {
     }
 
     const visions: Vision[] = ['deuteranopia', 'protanopia', 'tritanopia'];
+     
+    // console.log('📤 추출된 원본 색상 데이터:', variables);
 
-    // 여기에 제가 추후에 함수 추가 하면 될 듯 싶습니다!
-    //     variables = {
-    //   '--color-primary-100': { base: '#e7fdec', scale: true },
-    //   '--color-primary-300': { base: '#b5f7d3', scale: true },
-    //   '--color-primary-500': { base: '#7fe4c1', scale: true },
-    //   '--color-primary-700': { base: '#3fa495', scale: true },
-    //   '--color-primary-900': { base: '#186a6d', scale: true },
-    //   '--color-secondary-yellow': { base: '#fdfa91', scale: false },
-    //   '--color-secondary-blue': { base: '#005880', scale: false },
-    //   '--color-warning': { base: '#ff517c', scale: false },
-    //   '--color-default-gray-100': { base: '#fefefe', scale: true },
-    //   '--color-default-gray-400': { base: '#e6e6e6', scale: true },
-    //   '--color-default-gray-500': { base: '#c3c3c3', scale: true },
-    //   '--color-default-gray-700': { base: '#616161', scale: true },
-    //   '--color-default-gray-800': { base: '#212121', scale: true }
-    //   } 이렇게 데이터 넘겨 드릴테니 notion에 적어놓은 것처럼 넘겨주시면 됩니다!
-
-    visions.forEach(async (vision, idx) => {
-        await applyThemes({ vision, variables }, cssPath);
-    });
+    // 색상 변환 알고리즘 호출
+    try {
+        const algorithmResult = await requestColorTransformation(variables);
+                
+        for (const themeData of algorithmResult.themes) {
+            await applyThemes(themeData, cssPath);
+        }
+        
+    } catch (error) {
+        console.log("🚀 ~ runThemeApply ~ error:", error)
+        // 에러 발생 시 원본 색상으로 폴백
+        for (const vision of visions) {
+            await applyThemes({ vision, variables }, cssPath);
+        }
+    }
+        
     console.log(`✅ ${cssPath}에 색맹 테마가 적용되었습니다`);
 }
