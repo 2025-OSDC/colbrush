@@ -5,7 +5,7 @@ export async function requestColorTransformation(
   originalColors: VariableInput
 ): Promise<ColorTransformOutput> {
   
-  console.log(`🎨 원본 색상 데이터:`, originalColors);
+  // console.log(`🎨 원본 색상 데이터:`, originalColors);
   
   // TODO: 색상 변환 알고리즘 호출
   // const algorithmResult = await ALGORITHM_FUNCTION(originalColors);
@@ -24,7 +24,7 @@ export async function requestColorTransformation(
     }))
   };
   
-  console.log(`✨ 색상 변환 결과:`, mockResult);
+  // console.log(`✨ 색상 변환 결과:`, mockResult);
   
   return mockResult;
 }
