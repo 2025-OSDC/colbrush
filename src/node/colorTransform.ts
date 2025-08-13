@@ -77,7 +77,6 @@ export function findOptimalColorCombination(
   }
 
   dfs(0, [], 0);
-  console.log('dfs 완료')
   const finalColors = bestColors ?? [...baseColorsArray];
 
   return colorKeys.reduce((acc, key, idx) => {
