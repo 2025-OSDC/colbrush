@@ -106,7 +106,7 @@ export function applyThemes(input: ThemeGenInput, cssPath = CSS_PATH) {
 }
 
 // 간단 값 전달 시 규칙: "--토큰-숫자"면 기본 scale=true, 아니면 false
-function inferRich(varName: string, baseHex: string): VariableRich {
+export function inferRich(varName: string, baseHex: string): VariableRich {
     return variationRegex.test(varName)
         ? { base: baseHex, scale: true }
         : { base: baseHex, scale: false };

@@ -1,5 +1,5 @@
 {
-    "name": "color-blind-theme",
+    "name": "colbrush",
     "version": "1.0.0",
     "description": "",
     "type": "module",
@@ -61,6 +61,7 @@
         "react-dom": ">=17"
     },
     "devDependencies": {
+        "@types/chroma-js": "^3.1.1",
         "@types/jest": "^30.0.0",
         "@types/node": "^24.1.0",
         "@types/postcss-safe-parser": "^5.0.4",
