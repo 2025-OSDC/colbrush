@@ -9,6 +9,7 @@
     "exports": {
         ".": {
             "types": "./dist/index.browser.d.ts",
+            "react-server": "./dist/index.node.js",
             "browser": "./dist/index.browser.js",
             "import": "./dist/index.node.js",
             "default": "./dist/index.node.js"
@@ -17,6 +18,10 @@
             "types": "./dist/index.node.d.ts",
             "import": "./dist/index.node.js",
             "default": "./dist/index.node.js"
+        },
+        "./client": {
+            "types": "./dist/client.d.ts",
+            "default": "./dist/client.js"
         },
         "./package.json": "./package.json"
     },
@@ -38,7 +43,7 @@
     },
     "sideEffects": false,
     "scripts": {
-        "build": "tsup src/index.browser.ts src/index.node.ts src/cli.ts --format esm,cjs --dts",
+        "build": "tsup src/index.browser.ts src/index.node.ts src/client.ts src/cli.ts --format esm,cjs --dts",
         "dev": "tsup src/index.ts --watch",
         "test": "jest --passWithNoTests",
         "prepublishOnly": "pnpm build"

@@ -3,7 +3,11 @@ import { defineConfig } from 'tsup';
 export default defineConfig([
     // Node 엔트리 (라이브러리)
     {
-        entry: { 'index.node': 'src/index.node.ts' },
+        entry: {
+            index: 'src/index.ts',
+            'index.node': 'src/index.ts',
+            client: 'src/client.ts',
+        },
         format: ['esm', 'cjs'],
         platform: 'node',
         target: 'node18',
