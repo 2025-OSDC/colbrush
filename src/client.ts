@@ -3,8 +3,9 @@
 
 export {
     ThemeProvider,
-    useTheme,
     THEMES,
+    useUpdateLanguage,
+    useUpdateTheme,
     type ThemeType,
 } from './components/ThemeProvider.js';
 export { ThemeSwitcher } from './components/ThemeSwitcher.js';
