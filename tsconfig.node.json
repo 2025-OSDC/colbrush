@@ -13,6 +13,7 @@
         "src/node/**/*.ts",
         "src/node/**/*.mts",
         "src/index.node.ts",
-        "src/cli.ts"
+        "src/cli.ts",
+        "src/types/**/*.d.ts"
     ]
 }

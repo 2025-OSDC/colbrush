@@ -2,51 +2,114 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-export const THEMES = [
+export type TLanguage = 'English' | 'Korean';
+
+// 1) 내부 공통 키(변하지 않는 값)
+export const THEME_KEYS = [
     'default',
     'protanopia',
     'deuteranopia',
     'tritanopia',
 ] as const;
-export type ThemeType = (typeof THEMES)[number];
+export type ThemeKey = (typeof THEME_KEYS)[number];
+
+// 2) 언어별 라벨 매핑
+export const THEME_LABEL: Record<TLanguage, Record<ThemeKey, string>> = {
+    English: {
+        default: 'default',
+        protanopia: 'protanopia',
+        deuteranopia: 'deuteranopia',
+        tritanopia: 'tritanopia',
+    },
+    Korean: {
+        default: '기본',
+        protanopia: '적색맹',
+        deuteranopia: '녹색맹',
+        tritanopia: '청색맹',
+    },
+};
+
+// 3) 옵션 리스트 생성기
+export const getThemeOptions = (lang: TLanguage) =>
+    THEME_KEYS.map((key) => ({ key, label: THEME_LABEL[lang][key] }));
 
 type ThemeContextType = {
-    theme: ThemeType;
-    updateTheme: (t: ThemeType) => void;
+    theme: ThemeKey; // ← 내부 키만 저장
+    language: TLanguage;
+    updateTheme: (k: ThemeKey) => void;
+    updateLanguage: (t: TLanguage) => void;
 };
 
 const KEY = 'theme';
+const LANG_KEY = 'theme_lang';
 
 const ThemeContext = createContext<ThemeContextType>({
     theme: 'default',
+    language: 'English',
     updateTheme: () => {},
+    updateLanguage: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
 
+// label(예: '적색맹')이 저장돼 있던 예전 값도 키로 복구
+function normalizeToKey(value: string | null): ThemeKey {
+    if (!value) return 'default';
+    if ((THEME_KEYS as readonly string[]).includes(value))
+        return value as ThemeKey;
+
+    const reverse: Record<string, ThemeKey> = {};
+    (['English', 'Korean'] as const).forEach((lang) => {
+        (Object.entries(THEME_LABEL[lang]) as [ThemeKey, string][]).forEach(
+            ([k, label]) => {
+                reverse[label] = k;
+            }
+        );
+    });
+    return reverse[value] ?? 'default';
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<ThemeType>('default');
+    const [theme, setTheme] = useState<ThemeKey>('default');
+    const [language, setLanguage] = useState<TLanguage>('English');
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const stored =
-                (localStorage.getItem(KEY) as ThemeType) || 'default';
-            setTheme(stored);
-            document.documentElement.setAttribute('data-theme', stored);
-        }
+        if (typeof window === 'undefined') return;
+        const storedTheme = normalizeToKey(localStorage.getItem(KEY));
+        const storedLang =
+            (localStorage.getItem(LANG_KEY) as TLanguage) || 'English';
+        setTheme(storedTheme);
+        setLanguage(storedLang);
+        document.documentElement.setAttribute('data-theme', storedTheme);
     }, []);
 
-    const updateTheme = (t: ThemeType) => {
-        setTheme(t);
+    const updateTheme = (k: ThemeKey) => {
+        setTheme(k);
         if (typeof window !== 'undefined') {
-            localStorage.setItem(KEY, t);
-            document.documentElement.setAttribute('data-theme', t);
+            localStorage.setItem(KEY, k);
+            document.documentElement.setAttribute('data-theme', k);
         }
     };
 
-    const value = useMemo(() => ({ theme, updateTheme }), [theme]);
+    const updateLanguage = (t: TLanguage) => {
+        setLanguage(t);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(LANG_KEY, t);
+        }
+    };
+
+    const value = useMemo(
+        () => ({ theme, updateTheme, language, updateLanguage }),
+        [theme, language]
+    );
 
     return (
         <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
     );
 }
+export const useUpdateTheme = () => useTheme().updateTheme;
+export const useUpdateLanguage = () => useTheme().updateLanguage;
+
+// (기존 타입 이름을 쓰고 있다면 호환용 alias 제공)
+export type ThemeType = ThemeKey;
+export const THEMES = THEME_LABEL;
