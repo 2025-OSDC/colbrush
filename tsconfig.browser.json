@@ -12,6 +12,7 @@
     "include": [
         "src/runtime/**/*.ts",
         "src/components/**/*.tsx",
-        "src/index.browser.ts"
+        "src/index.browser.ts",
+        "src/types/**/*.d.ts"
     ]
 }
