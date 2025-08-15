@@ -112,7 +112,7 @@ export function ThemeSwitcher({ options, className }: Props) {
                                     width={18}
                                     height={18}
                                     stroke={`${theme === opt.key} ? '#ffffff': '#3D4852'`}
-                                    // fill={`${theme === opt.key} ? '#ffffff': '#3D4852'`}
+                                    fill={`${theme === opt.key} ? '#ffffff': '#3D4852'`}
                                     className="inline-block"
                                 />
                                 <span>{opt.label}</span>
