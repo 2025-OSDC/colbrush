@@ -1,0 +1,18 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "outDir": "dist",
+        "types": ["node"],
+        "jsx": "react-jsx",
+        "jsxImportSource": "react",
+        "allowImportingTsExtensions": true
+    },
+    "include": [
+        "src/node/**/*.ts",
+        "src/node/**/*.mts",
+        "src/cli.ts",
+        "src/types/**/*.d.ts"
+    ]
+}

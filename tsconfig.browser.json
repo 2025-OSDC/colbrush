@@ -1,0 +1,18 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "outDir": "dist",
+        "jsx": "react-jsx",
+        "jsxImportSource": "react",
+        "types": ["react", "react-dom"],
+        "allowImportingTsExtensions": true
+    },
+    "include": [
+        "src/runtime/**/*.ts",
+        "src/components/**/*.tsx",
+        "src/index.browser.ts",
+        "src/types/**/*.d.ts"
+    ]
+}
