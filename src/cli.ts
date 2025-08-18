@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/// <reference types="node" />
 import parseFlags from './node/parseFlags.js';
 import { runThemeApply } from './node/runThemeApply.js';
 

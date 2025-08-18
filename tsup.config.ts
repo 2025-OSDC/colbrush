@@ -1,24 +1,20 @@
 import { defineConfig } from 'tsup';
-
+import svgr from 'esbuild-plugin-svgr';
+import svgrPlugin from 'esbuild-plugin-svgr';
 export default defineConfig([
-    // Node 엔트리 (라이브러리)
-    {
-        entry: { 'index.node': 'src/index.node.ts' },
-        format: ['esm', 'cjs'],
-        platform: 'node',
-        target: 'node18',
-        outDir: 'dist',
-        dts: { entry: 'src/index.node.ts' },
-        tsconfig: 'tsconfig.node.json',
-        clean: true,
-    },
-
     // Browser 엔트리 (라이브러리)
     {
         entry: { 'index.browser': 'src/index.browser.ts' },
         format: ['esm'],
         platform: 'browser',
         target: 'es2020',
+        esbuildPlugins: [
+            svgr({
+                exportType: 'default',
+                svgo: true,
+                ref: true,
+            }),
+        ],
         outDir: 'dist',
         dts: { entry: 'src/index.browser.ts' },
         tsconfig: 'tsconfig.browser.json',
@@ -33,9 +29,11 @@ export default defineConfig([
             'node:url',
         ],
         clean: false,
+        loader: {
+            '.svg': 'dataurl',
+        },
     },
 
-    // CLI (Node 전용, CJS)
     {
         entry: { cli: 'src/cli.ts' },
         format: ['cjs'], // ★ CJS로 빌드
@@ -43,8 +41,6 @@ export default defineConfig([
         target: 'node18',
         outDir: 'dist',
         splitting: false,
-        // 소스 첫 줄에 shebang이 없다면 아래 주석 해제
-        // banner: { js: '#!/usr/bin/env node' },
         external: ['postcss', 'postcss-safe-parser', 'chokidar'],
         tsconfig: 'tsconfig.node.json',
         clean: false,
