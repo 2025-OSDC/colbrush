@@ -1,3 +1,7 @@
 @import "tailwindcss";
 
 @source "./src/**/*.{js,ts,jsx,tsx}";
+
+svg rect {
+  fill: none !important;
+}
