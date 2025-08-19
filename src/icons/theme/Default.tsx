@@ -3,9 +3,8 @@ import type { SVGProps } from "react";
 const SvgDefault = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={31}
-    height={31}
     fill="none"
+    viewBox="0 0 31 31"
     {...props}
   >
     <path

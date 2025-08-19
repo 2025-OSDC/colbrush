@@ -3,60 +3,60 @@ import type { SVGProps } from "react";
 const SvgKr = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={42}
-    height={30}
+    width={24}
+    height={17}
     fill="none"
     {...props}
   >
-    <g clipPath="url(#KR_svg__a)" filter="url(#KR_svg__b)">
-      <path fill="#fff" d="M3 3h36v24H3z" />
+    <g clipPath="url(#a)" filter="url(#b)">
+      <path fill="#fff" d="M1.906 2h20v13.333h-20z" />
       <path
         fill="#000"
         fillRule="evenodd"
-        d="m8.496 10.27 3.328-4.992.876.584-3.328 4.992zm1.248.832 3.328-4.992.876.584-3.328 4.992zm1.248.832 3.328-4.992.876.584-3.328 4.992zm15.81 10.54 3.327-4.993.876.584-3.328 4.992zm1.247.831 3.329-4.992.875.584-3.328 4.992zm5.452-3.576-3.328 4.992-.876-.584 3.329-4.992z"
+        d="m4.959 6.04 1.849-2.774.487.324-1.85 2.773zm.693.461 1.85-2.773.486.324-1.85 2.774zm.694.463L8.195 4.19l.486.324-1.849 2.774zm8.782 5.855 1.85-2.774.486.325-1.849 2.773zm.694.462 1.849-2.774.486.325-1.849 2.773zm3.029-1.987L17 14.068l-.486-.325 1.85-2.773z"
         clipRule="evenodd"
       />
       <path
         fill="#fff"
         fillRule="evenodd"
-        d="m31.988 22.853-4.16-2.774.487-.73 4.16 2.774z"
+        d="m18.01 13.03-2.31-1.542.27-.405 2.31 1.54z"
         clipRule="evenodd"
       />
       <path
         fill="#CA163A"
-        d="M25.992 18.328a6 6 0 1 0-9.985-6.657 6 6 0 0 0 9.984 6.657"
+        d="M14.68 10.514a3.333 3.333 0 1 0-5.548-3.698 3.333 3.333 0 0 0 5.547 3.698"
       />
       <path
         fill="#0E4896"
-        d="M16.007 11.671A3.001 3.001 0 0 0 20.999 15a3.001 3.001 0 0 1 4.993 3.328 6 6 0 0 1-8.321 1.664 6 6 0 0 1-1.664-8.32"
+        d="M9.132 6.816a1.667 1.667 0 0 0 2.774 1.85 1.667 1.667 0 0 1 2.773 1.848 3.334 3.334 0 0 1-5.547-3.698"
       />
       <path
         fill="#000"
         fillRule="evenodd"
-        d="m30.173 5.277 3.328 4.993-.875.584-3.329-4.993zm-1.248.832 3.328 4.993-.875.584-3.329-4.993zm-1.248.832 3.328 4.993-.876.584-3.328-4.993zm-15.809 10.54 3.328 4.992-.876.584-3.328-4.992zm-1.248.832 3.328 4.992-.876.584-3.328-4.992zm-1.248.832 3.328 4.992-.876.584-3.328-4.992z"
+        d="m17.002 3.266 1.849 2.773-.487.325-1.849-2.774zm-.694.462 1.85 2.773-.487.325-1.85-2.774zm-.693.462 1.85 2.774-.488.324-1.848-2.773zm-8.783 5.855 1.85 2.774-.487.324-1.85-2.773zm-.693.463 1.849 2.773-.487.324-1.849-2.773zm-.693.462 1.849 2.773-.487.325-1.849-2.774z"
         clipRule="evenodd"
       />
       <path
         fill="#000"
-        d="m11.224 21.516 1.248-.832zm16.847-11.232 1.458-.971zm2.706-1.804 1.248-.832z"
+        d="m6.475 12.286.693-.462zm9.36-6.24.81-.54zm1.502-1.002.694-.462z"
       />
       <path
         fill="#fff"
         fillRule="evenodd"
-        d="m32.269 8.013-1.248.832-.487-.73 1.248-.832zm-2.496 1.664-1.458.972-.487-.73 1.458-.972zM12.716 21.05l-1.248.832-.487-.73 1.248-.832z"
+        d="m18.166 4.784-.693.463-.27-.406.693-.462zm-1.386.925-.81.54-.27-.406.81-.54zm-9.476 6.317-.694.463-.27-.406.693-.462z"
         clipRule="evenodd"
       />
     </g>
     <defs>
-      <clipPath id="KR_svg__a">
-        <path fill="#fff" d="M3 3h36v24H3z" />
+      <clipPath id="a">
+        <path fill="#fff" d="M1.906 2h20v13.333h-20z" />
       </clipPath>
       <filter
-        id="KR_svg__b"
-        width={40.684}
-        height={28.684}
-        x={0.658}
-        y={0.658}
+        id="b"
+        width={22.602}
+        height={15.936}
+        x={0.605}
+        y={0.699}
         colorInterpolationFilters="sRGB"
         filterUnits="userSpaceOnUse"
       >
@@ -67,13 +67,16 @@ const SvgKr = (props: SVGProps<SVGSVGElement>) => (
           values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
         />
         <feOffset />
-        <feGaussianBlur stdDeviation={1.171} />
+        <feGaussianBlur stdDeviation={0.65} />
         <feComposite in2="hardAlpha" operator="out" />
         <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-        <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_85_784" />
+        <feBlend
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_306_2477"
+        />
         <feBlend
           in="SourceGraphic"
-          in2="effect1_dropShadow_85_784"
+          in2="effect1_dropShadow_306_2477"
           result="shape"
         />
       </filter>

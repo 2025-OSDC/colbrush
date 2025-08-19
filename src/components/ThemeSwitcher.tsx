@@ -10,10 +10,12 @@ import {
 import Logo from '../icons/Logo.js';
 import US from '../icons/Us.js';
 import KR from '../icons/Kr.js';
+import XButton from '../icons/X.js';
 import IconTritanopia from '../icons/theme/Tritanopia.js';
 import IconDefault from '../icons/theme/Default.js';
 import IconProtanopia from '../icons/theme/Protanopia.js';
 import IconDeuteranopia from '../icons/theme/Deuteranopia.js';
+import { ThemeSwitcherPortal } from './ThemeSwitcherPortal.js';
 
 const THEME_ICON: Record<ThemeKey, React.FC<React.SVGProps<SVGSVGElement>>> = {
     default: IconDefault,
@@ -28,6 +30,7 @@ type Props = {
 
 export function ThemeSwitcher({ options, className }: Props) {
     const { theme, updateTheme, language, updateLanguage } = useTheme();
+    const [hovered, setHovered] = useState<string | null>(null);
     const list = useMemo(
         () => (options?.length ? options : getThemeOptions(language)),
         [options, language]
@@ -56,108 +59,106 @@ export function ThemeSwitcher({ options, className }: Props) {
     };
 
     return (
-        <div
-            ref={wrapperRef}
-            className={[
-                'fixed bottom-[20px] right-[20px] flex justify-center items-center text-[20px] bg-[#ffffff] drop-shadow-md',
-                isOpen
-                    ? 'w-[220px] h-fit rounded-[18px]'
-                    : 'w-[60px] h-[60px] rounded-full',
-                className ?? '',
-            ].join(' ')}
-            role="presentation"
-        >
-            {/* 토글 버튼 */}
-            <button
-                type="button"
-                aria-haspopup="menu"
-                aria-expanded={isOpen}
-                onClick={toggle}
-                className={[
-                    'w-[60px] h-[60px] p-[10px] bg-[#ffffff] rounded-full flex justify-center items-center',
-                    isOpen ? 'hidden' : 'block',
-                ].join(' ')}
+        <ThemeSwitcherPortal>
+            <div
+                ref={wrapperRef}
+                className="flex w-[100vw] h-[100vh] z-[10000]"
             >
-                <Logo className="self-center" width={40} height={40} />
-            </button>
-
-            {/* 메뉴 목록 */}
-            {isOpen && (
-                <div
-                    role="menu"
-                    aria-label="Select theme"
-                    className="flex flex-col bg-[#ffffff] rounded-[18px] w-[220px]"
+                {/* 토글 버튼 */}
+                <button
+                    type="button"
+                    aria-haspopup="menu"
+                    aria-expanded={isOpen}
+                    onClick={toggle}
+                    className="fixed right-[25px] bottom-[25px] w-[60px] h-[60px] p-[10px] bg-[#ffffff] rounded-full flex justify-center items-center shadow-[0_0_3px_0_rgba(0,0,0,0.17)]"
                 >
-                    {list.map((opt) => {
-                        const Icon = THEME_ICON[opt.key];
-                        return (
-                            <button
-                                key={opt.key}
-                                type="button"
-                                role="menuitemradio"
-                                aria-checked={theme === opt.key}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    updateTheme(opt.key);
-                                }}
-                                className={[
-                                    'text-[18px] text-[#3D4852] py-1 w-full h-[50px] text-center gap-[8px] flex items-center justify-center rounded-[18px]',
-                                    'hover:bg-[#0072B1]',
-                                    theme === opt.key
-                                        ? 'bg-[#0072B1] text-[#ffffff]'
-                                        : '',
-                                ].join(' ')}
-                            >
-                                <Icon
-                                    width={18}
-                                    height={18}
-                                    stroke={`${theme === opt.key} ? '#ffffff': '#3D4852'`}
-                                    fill={`${theme === opt.key} ? '#ffffff': '#3D4852'`}
-                                    className="inline-block"
-                                />
-                                <span>{opt.label}</span>
-                            </button>
-                        );
-                    })}
+                    {isOpen ? (
+                        <XButton className="self-center" />
+                    ) : (
+                        <Logo className="self-center" />
+                    )}
+                </button>
 
-                    <div className="w-full border-[0.5px] border-[#B8B8B8]" />
-
-                    <div className="flex h-[80px] justify-evenly items-center gap-[10px] px-[10px]">
-                        <div
-                            className={`relative hover:cursor-pointer flex text-[18px] text-[#3D4852] ${
-                                language === 'English' ? 'underline' : ''
-                            }`}
-                            onClick={() => updateLanguage('English')}
-                        >
-                            <span className="absolute top-[-20px] left-[0px] text-[#3D4852] text-[8px] px-[9px] py-[2px] rounded-[13px] bg-[#D9D9D9]">
-                                Language
-                            </span>
-                            <US
-                                className="self-center"
-                                width={30}
-                                height={30}
-                            />
-                            English
+                {/* 메뉴 목록 */}
+                {isOpen && (
+                    <div
+                        role="menu"
+                        aria-label="Select theme"
+                        className="fixed bottom-[100px] right-[25px] flex-col bg-[#ffffff] rounded-[18px] w-[220px] gap-[11px]"
+                    >
+                        <div>
+                            {list.map((opt) => {
+                                const Icon = THEME_ICON[opt.key];
+                                return (
+                                    <div key={opt.key}>
+                                        <button
+                                            key={opt.key}
+                                            type="button"
+                                            role="menuitemradio"
+                                            aria-checked={theme === opt.key}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                updateTheme(opt.key);
+                                            }}
+                                            onMouseEnter={() =>
+                                                setHovered(opt.key)
+                                            }
+                                            onMouseLeave={() =>
+                                                setHovered(null)
+                                            }
+                                            className={[
+                                                'hover:cursor-pointer group text-[18px] text-[#3D4852] py-1 w-full h-[50px] text-center gap-[8px] flex items-center justify-center rounded-[18px] hover:bg-[#3D4852]',
+                                                theme === opt.key
+                                                    ? 'bg-[#3D4852] text-[#ffffff]'
+                                                    : '',
+                                            ].join(' ')}
+                                        >
+                                            <Icon
+                                                width={24}
+                                                height={24}
+                                                className={`inline-block ${
+                                                    theme === opt.key ||
+                                                    hovered === opt.key
+                                                        ? 'text-white'
+                                                        : 'text-[#3D4852]'
+                                                }`}
+                                            />
+                                            <span className="group-hover:text-[#ffffff]">
+                                                {opt.label}
+                                            </span>
+                                        </button>
+                                        {opt.key !== 'tritanopia' && (
+                                            <div className="border-b-[0.5px] border-b-[#D9D9D9] w-full"></div>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
 
-                        <div className="h-full w-[1px] border-r-[0.5px] border-r-[#B8B8B8]" />
+                        <div className="w-full border-[0.5px] border-[#B8B8B8]" />
 
-                        <div
-                            className={`hover:cursor-pointer flex text-[18px] text-[#3D4852] ${
-                                language === 'Korean' ? 'underline' : ''
-                            }`}
-                            onClick={() => updateLanguage('Korean')}
-                        >
-                            <KR
-                                className="self-center"
-                                width={30}
-                                height={30}
-                            />
-                            Korean
+                        <div className="flex justify-evenly items-center gap-[10px] px-[10px] my-[15px]">
+                            {language === 'English' ? (
+                                <div
+                                    className={`hover:cursor-pointer flex text-[18px] text-[#3D4852] gap-[8px] items-center justify-center`}
+                                    onClick={() => updateLanguage('Korean')}
+                                >
+                                    <US />
+                                    English
+                                </div>
+                            ) : (
+                                <div
+                                    className={`hover:cursor-pointer flex text-[18px] text-[#3D4852] gap-[8px] items-center justify-center `}
+                                    onClick={() => updateLanguage('English')}
+                                >
+                                    <KR />
+                                    Korean
+                                </div>
+                            )}
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+        </ThemeSwitcherPortal>
     );
 }

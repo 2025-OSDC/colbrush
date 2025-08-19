@@ -3,9 +3,8 @@ import type { SVGProps } from "react";
 const SvgDeuteranopia = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={28}
-    height={29}
     fill="none"
+    viewBox="0 0 28 29"
     {...props}
   >
     <rect

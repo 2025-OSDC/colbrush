@@ -1,6 +1,6 @@
 {
     "name": "colbrush",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "description": "",
     "type": "module",
     "main": "./dist/client.cjs",
@@ -29,10 +29,10 @@
         "dist/styles.css"
     ],
     "bin": {
-        "colbrush": "./dist/cli.js"
+        "colbrush": "./dist/cli.cjs"
     },
     "scripts": {
-        "svgr": "svgr src/assets --out-dir src/icons --typescript",
+        "svgr": "svgr src/assets --out-dir src/icons --typescript --expand-props end --svgo-config svgo.config.js",
         "build:css": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --minify",
         "build": "pnpm svgr && tsup --config tsup.config.ts && pnpm build:css",
         "dev": "tsup --config tsup.config.ts --watch",
