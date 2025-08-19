@@ -31,7 +31,6 @@ export default defineConfig([
         external: ['postcss', 'postcss-safe-parser', 'chokidar'],
         tsconfig: 'tsconfig.node.json',
         clean: false,
-        banner: { js: '#!/usr/bin/env node' },
         outExtension: ({ format }) => ({
             js: format === 'cjs' ? '.cjs' : '.js',
         }),
