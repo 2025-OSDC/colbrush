@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -10,13 +11,15 @@ export function ThemeSwitcherPortal({
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
-        const el = document.createElement('div');
-        el.id = 'theme-switcher-portal';
-        document.body.appendChild(el);
+        let el = document.getElementById(
+            'theme-switcher-portal'
+        ) as HTMLElement | null;
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'theme-switcher-portal';
+            document.body.appendChild(el);
+        }
         setContainer(el);
-        return () => {
-            document.body.removeChild(el);
-        };
     }, []);
 
     if (!container) return null;
