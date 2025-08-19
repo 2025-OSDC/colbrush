@@ -7,13 +7,13 @@ import {
     THEME_LABEL,
     type ThemeKey,
 } from './ThemeProvider.js';
-import Logo from '../assets/logo.svg?react';
-import US from '../assets/US.svg?react';
-import KR from '../assets/KR.svg?react';
-import IconTritanopia from '../assets/theme/tritanopia.svg?react';
-import IconDefault from '../assets/theme/default.svg?react';
-import IconProtanopia from '../assets/theme/protanopia.svg?react';
-import IconDeuteranopia from '../assets/theme/deuteranopia.svg?react';
+import Logo from '../icons/Logo.js';
+import US from '../icons/Us.js';
+import KR from '../icons/Kr.js';
+import IconTritanopia from '../icons/theme/Tritanopia.js';
+import IconDefault from '../icons/theme/Default.js';
+import IconProtanopia from '../icons/theme/Protanopia.js';
+import IconDeuteranopia from '../icons/theme/Deuteranopia.js';
 
 const THEME_ICON: Record<ThemeKey, React.FC<React.SVGProps<SVGSVGElement>>> = {
     default: IconDefault,
