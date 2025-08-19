@@ -1,17 +1,12 @@
 {
     "name": "colbrush",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "",
     "type": "module",
-    "main": "./dist/index.browser.js",
-    "module": "./dist/index.browser.js",
-    "types": "./dist/index.browser.d.ts",
+    "main": "./dist/client.cjs",
+    "module": "./dist/client.js",
+    "types": "./dist/client.d.ts",
     "exports": {
-        ".": {
-            "types": "./dist/index.browser.d.ts",
-            "import": "./dist/index.browser.js",
-            "require": "./dist/index.browser.cjs"
-        },
         "./styles.css": "./dist/styles.css",
         "./client": {
             "types": "./dist/client.d.ts",
@@ -23,7 +18,7 @@
     "typesVersions": {
         "*": {
             "*": [
-                "./dist/index.browser.d.ts"
+                "./dist/client.d.ts"
             ]
         }
     },
@@ -37,10 +32,10 @@
         "colbrush": "./dist/cli.js"
     },
     "scripts": {
-        "build": "tsup src/index.browser.ts src/client.ts src/cli.ts --format esm,cjs --dts && pnpm build:css",
+        "svgr": "svgr src/assets --out-dir src/icons --typescript",
         "build:css": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --minify",
-        "dev": "tsup src/index.browser.ts --watch",
-        "test": "jest --passWithNoTests",
+        "build": "pnpm svgr && tsup --config tsup.config.ts && pnpm build:css",
+        "dev": "tsup --config tsup.config.ts --watch",
         "prepublishOnly": "pnpm build"
     },
     "keywords": [],
@@ -59,6 +54,7 @@
         "react-dom": ">=17"
     },
     "devDependencies": {
+        "@svgr/cli": "^8.1.0",
         "@tailwindcss/cli": "^4.1.12",
         "@types/chroma-js": "^3.1.1",
         "@types/jest": "^30.0.0",
@@ -72,9 +68,9 @@
         "eslint-plugin-import": "^2.32.0",
         "jest": "^30.0.5",
         "prettier": "^3.6.2",
+        "tailwindcss": "^4.1.12",
         "ts-jest": "^29.4.0",
         "tsup": "^8.5.0",
-        "tailwindcss": "^4.1.12",
         "typescript": "^5.8.3"
     }
 }
