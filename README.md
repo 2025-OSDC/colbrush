@@ -112,7 +112,7 @@ export default function TestPage() {
 
 ## 👥 Team
 
-| ![suho](https://github.com/user-attachments/assets/10c25151-e122-4ddb-8d8c-8b802c01c738) | ![hayoung](https://github.com/user-attachments/assets/7b7b453e-82f1-4f8e-bcc9-edba4d6fa279) | ![yeonjin](https://github.com/user-attachments/assets/55a2e27b-cb75-4115-a0ff-cfe97610ca97) | ![hyeseong](https://github.com/user-attachments/assets/9cdf9354-0d31-4410-ad94-f57ffc684849) | ![junhee](https://via.placeholder.com/100) |
+| ![suho](https://github.com/user-attachments/assets/10c25151-e122-4ddb-8d8c-8b802c01c738) | ![hayoung](https://github.com/user-attachments/assets/7b7b453e-82f1-4f8e-bcc9-edba4d6fa279) | ![yeonjin](https://github.com/user-attachments/assets/55a2e27b-cb75-4115-a0ff-cfe97610ca97) | ![hyeseong](https://github.com/user-attachments/assets/9cdf9354-0d31-4410-ad94-f57ffc684849) | ![junhee](https://github.com/user-attachments/assets/aeebf2cc-5aaa-4eac-bbe4-e093dac3d60a) |
 | ---------------------------------------- | ------------------------------------------- | ------------------------------------------- | -------------------------------------------- | ------------------------------------------ |
 | **윤수호**                               | **노하영**                                  | [**김연진**](https://github.com/yeonjin719)   | [**윤혜성**](https://github.com/hyesngy)                                   | [**이준희**](https://github.com/jjjuni)                                  |
 | PM                                       | Designer                                    | Frontend · Library Engineer                 | Frontend · Library Engineer                  | Frontend · Library Engineer                 |
@@ -127,3 +127,4 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
