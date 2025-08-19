@@ -1,6 +1,24 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+
+const PORTAL_ID = 'theme-switcher-portal';
+
+// 모듈 전역: 컨테이너 싱글턴 & 활성 인스턴스 추적
+let portalEl: HTMLElement | null = null;
+let activeOwner: symbol | null = null;
+
+function ensurePortal(): HTMLElement {
+    if (typeof document === 'undefined') throw new Error('No document');
+    if (portalEl && document.body.contains(portalEl)) return portalEl;
+
+    const existing = document.getElementById(PORTAL_ID) as HTMLElement | null;
+    portalEl =
+        existing ??
+        Object.assign(document.createElement('div'), { id: PORTAL_ID });
+    if (!existing) document.body.appendChild(portalEl);
+    return portalEl;
+}
 
 export function ThemeSwitcherPortal({
     children,
@@ -8,20 +26,25 @@ export function ThemeSwitcherPortal({
     children: React.ReactNode;
 }) {
     const [container, setContainer] = useState<HTMLElement | null>(null);
+    const ownerId = useRef<symbol>(Symbol('ThemeSwitcherPortal'));
 
     useEffect(() => {
-        if (typeof window === 'undefined') return;
-        let el = document.getElementById(
-            'theme-switcher-portal'
-        ) as HTMLElement | null;
-        if (!el) {
-            el = document.createElement('div');
-            el.id = 'theme-switcher-portal';
-            document.body.appendChild(el);
-        }
+        const el = ensurePortal();
         setContainer(el);
+
+        // 첫 주인만 등록 (이미 있으면 그대로 유지)
+        if (activeOwner === null) activeOwner = ownerId.current;
+
+        return () => {
+            // 내가 주인이었을 때만 해제
+            if (activeOwner === ownerId.current) {
+                activeOwner = null;
+            }
+        };
     }, []);
 
     if (!container) return null;
-    return createPortal(children, container);
+
+    const isPrimary = activeOwner === ownerId.current;
+    return createPortal(isPrimary ? children : null, container);
 }

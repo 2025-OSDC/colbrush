@@ -9,4 +9,3 @@ export {
     type ThemeType,
 } from './components/ThemeProvider.js';
 export { ThemeSwitcher } from './components/ThemeSwitcher.js';
-export { ThemeSwitcherPortal } from './components/ThemeSwitcherPortal.js';
