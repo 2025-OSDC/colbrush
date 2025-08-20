@@ -89,16 +89,15 @@ function Settings() {
 ```
 ### 5. Use hooks for theme and language switching
 ```
-import { useUpdateLanguage, useUpdateTheme } from 'colbrush/client';
+import { useTheme } from 'colbrush/client';
 
 export default function TestPage() {
-    const updateTheme = useUpdateTheme();
-    const updateLanguage = useUpdateLanguage();
+    const { theme, updateTheme, language, updateLanguage } = useTheme();
 
     return (
         <div className="flex">
-            <button onClick={() => updateTheme('tritanopia')}>색맹 유형 변경</button>
-            <button onClick={() => updateLanguage('English')}>언어 변경</button>
+            <button onClick={() => updateTheme('tritanopia')}>Change to tritanopia</button>
+            <button onClick={() => updateLanguage('English')}>Change to English</button>
         </div>
     );
 }
@@ -127,4 +126,5 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
