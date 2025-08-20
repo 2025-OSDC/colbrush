@@ -1,6 +1,6 @@
 {
     "name": "colbrush",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "description": "A React theme switching library that makes it easy to apply color-blind accessible UI themes",
     "homepage": "https://colbrush.vercel.app",
     "repository": {
