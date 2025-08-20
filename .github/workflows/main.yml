@@ -10,6 +10,11 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
