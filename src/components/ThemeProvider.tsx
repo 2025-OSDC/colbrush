@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 export type TLanguage = 'English' | 'Korean';
 
 // 1) 내부 공통 키(변하지 않는 값)
-export const THEME_KEYS = [
+const THEME_KEYS = [
     'default',
     'protanopia',
     'deuteranopia',
@@ -34,7 +34,7 @@ export const getThemeOptions = (lang: TLanguage) =>
     THEME_KEYS.map((key) => ({ key, label: THEME_LABEL[lang][key] }));
 
 type ThemeContextType = {
-    theme: ThemeKey; // ← 내부 키만 저장
+    theme: ThemeKey;
     language: TLanguage;
     updateTheme: (k: ThemeKey) => void;
     updateLanguage: (t: TLanguage) => void;
@@ -52,7 +52,6 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const useTheme = () => useContext(ThemeContext);
 
-// label(예: '적색맹')이 저장돼 있던 예전 값도 키로 복구
 function normalizeToKey(value: string | null): ThemeKey {
     if (!value) return 'default';
     if ((THEME_KEYS as readonly string[]).includes(value))
@@ -99,7 +98,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     };
 
     const value = useMemo(
-        () => ({ theme, updateTheme, language, updateLanguage }),
+        () => ({ theme, language, updateTheme, updateLanguage }),
         [theme, language]
     );
 
@@ -107,9 +106,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
     );
 }
+
 export const useUpdateTheme = () => useTheme().updateTheme;
 export const useUpdateLanguage = () => useTheme().updateLanguage;
 
-// (기존 타입 이름을 쓰고 있다면 호환용 alias 제공)
 export type ThemeType = ThemeKey;
 export const THEMES = THEME_LABEL;
