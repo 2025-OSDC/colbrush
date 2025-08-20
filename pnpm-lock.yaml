@@ -27,10 +27,10 @@ importers:
         specifier: ^7.0.1
         version: 7.0.1(postcss@8.5.6)
       react:
-        specifier: ^19.1.1
+        specifier: '>=17'
         version: 19.1.1
       react-dom:
-        specifier: ^19.1.1
+        specifier: '>=17'
         version: 19.1.1(react@19.1.1)
     devDependencies:
       '@svgr/cli':
