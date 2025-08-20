@@ -60,10 +60,7 @@ export function ThemeSwitcher({ options, className }: Props) {
 
     return (
         <ThemeSwitcherPortal>
-            <div
-                ref={wrapperRef}
-                className="flex w-[100vw] h-[100vh] z-[10000]"
-            >
+            <div ref={wrapperRef} className="z-[10000]">
                 {/* 토글 버튼 */}
                 <button
                     type="button"
