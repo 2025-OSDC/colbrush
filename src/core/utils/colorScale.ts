@@ -1,6 +1,6 @@
 import Color from 'colorjs.io';
-import { Scale, ScaleKeys } from '../../types/types.js';
-import { DEFAULT_KEYS, DEFAULT_SCALE } from '../../constants/variation.js';
+import type { Scale, ScaleKeys } from '../types.js';
+import { DEFAULT_KEYS, DEFAULT_SCALE } from '../constants/variation.js';
 
 const CLAMP01 = (x: number) => Math.max(0, Math.min(1, x));
 

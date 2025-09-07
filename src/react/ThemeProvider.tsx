@@ -68,7 +68,7 @@ function normalizeToKey(value: string | null): ThemeKey {
     return reverse[value] ?? 'default';
 }
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children }: { children?: React.ReactNode }) {
     const [theme, setTheme] = useState<ThemeKey>('default');
     const [language, setLanguage] = useState<TLanguage>('English');
 

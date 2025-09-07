@@ -1,5 +1,3 @@
-import { Vision } from '../types/types';
-
 export function removeExistingThemeBlocks(content: string): string {
     const visions = ['protanopia', 'deuteranopia', 'tritanopia'];
     let cleaned = content;

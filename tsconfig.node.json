@@ -10,9 +10,9 @@
         "allowImportingTsExtensions": true
     },
     "include": [
-        "src/node/**/*.ts",
-        "src/node/**/*.mts",
-        "src/cli.ts",
+        "src/cli/**/*.ts",
+        "src/cli/**/*.mts",
+        "src/cli/index.ts",
         "src/types/**/*.d.ts"
     ]
 }
