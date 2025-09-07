@@ -1,4 +1,4 @@
-import { ScaleKeys } from '../types/types.js';
+import type { ScaleKeys } from '../types.js';
 
 export const DEFAULT_KEYS = [
     '50',
