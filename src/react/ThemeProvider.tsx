@@ -1,6 +1,13 @@
 'use client';
-
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import {
+    createContext,
+    PropsWithChildren,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 
 export type TLanguage = 'English' | 'Korean';
 
@@ -68,7 +75,9 @@ function normalizeToKey(value: string | null): ThemeKey {
     return reverse[value] ?? 'default';
 }
 
-export function ThemeProvider({ children }: { children?: React.ReactNode }) {
+type ThemeProviderProps = { children: ReactNode };
+
+export function ThemeProvider({ children }: ThemeProviderProps) {
     const [theme, setTheme] = useState<ThemeKey>('default');
     const [language, setLanguage] = useState<TLanguage>('English');
 
