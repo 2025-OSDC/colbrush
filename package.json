@@ -41,7 +41,8 @@
         "build:css": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --minify",
         "build": "pnpm svgr && tsup --config tsup.config.ts && pnpm build:css",
         "dev": "tsup --config tsup.config.ts --watch",
-        "prepublishOnly": "pnpm build"
+        "prepublishOnly": "pnpm build",
+        "lint": "eslint ."
     },
     "keywords": [],
     "author": "TEAM ColorBrush",

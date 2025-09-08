@@ -7,5 +7,5 @@ export {
     useTheme,
     type ThemeType,
     type TLanguage,
-} from './components/ThemeProvider.js';
-export { ThemeSwitcher } from './components/ThemeSwitcher.js';
+} from './react/ThemeProvider.js';
+export { ThemeSwitcher } from './react/ThemeSwitcher.js';

@@ -1,4 +1,4 @@
-import { Flags } from '../types/types';
+import type { Flags } from '../core/types.js';
 
 export default function parseFlags(
     argv: readonly string[] = process.argv.slice(2)

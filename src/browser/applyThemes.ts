@@ -5,46 +5,46 @@ export type CSSVarMap = Record<string, string>; // { "--color-primary-500": "#7f
 export type ApplyThemeMode = 'inline' | 'style';
 
 export interface ApplyThemeOptions {
-    /**
+    /*
      * 적용 모드
      *  - 'inline': target.style.setProperty로 직접 주입
      *  - 'style' : <style> 태그에 selector 블록으로 주입
      */
     mode?: ApplyThemeMode;
 
-    /**
+    /*
      * mode='style'일 때 적용할 CSS 선택자
      * 지정 안 하면 themeName 있으면 `[data-theme="<themeName>"]`, 없으면 ':root'
      */
     selector?: string;
 
-    /**
+    /*
      * themeName 지정 시 target에 data-theme="<themeName>" 속성 부여
      */
     themeName?: string;
 
-    /**
+    /*
      * mode='style'일 때 <style> 태그 id
      */
     styleId?: string;
 
-    /**
+    /*
      * themeName 있을 때 data-theme 속성을 부여할지 여부
      */
     setDataThemeAttr?: boolean;
 
-    /**
+    /*
      * mode='style'일 때 기존 블록을 완전히 대체할지 여부
      */
     replace?: boolean;
 }
 
-/** 변수명 표준화 */
+/* 변수명 표준화 */
 function normalizeVarName(name: string) {
     return name.startsWith('--') ? name : `--${name}`;
 }
 
-/** data-theme 속성 세팅 */
+/* data-theme 속성 세팅 */
 function maybeSetDataTheme(
     target: HTMLElement,
     themeName?: string,
@@ -55,14 +55,14 @@ function maybeSetDataTheme(
     }
 }
 
-/** inline 모드 적용 */
+/* inline 모드 적용 */
 function applyInline(target: HTMLElement, vars: CSSVarMap) {
     for (const [k, v] of Object.entries(vars)) {
         target.style.setProperty(normalizeVarName(k), v);
     }
 }
 
-/** style 태그 모드 적용 */
+/* style 태그 모드 적용 */
 function applyWithStyleTag(
     vars: CSSVarMap,
     selector: string,

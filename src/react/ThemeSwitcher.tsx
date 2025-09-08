@@ -25,10 +25,9 @@ const THEME_ICON: Record<ThemeKey, React.FC<React.SVGProps<SVGSVGElement>>> = {
 };
 type Props = {
     options?: { key: ThemeKey; label: string }[]; // ← 라벨/키 쌍으로 받기
-    className?: string;
 };
 
-export function ThemeSwitcher({ options, className }: Props) {
+export function ThemeSwitcher({ options }: Props) {
     const { theme, updateTheme, language, updateLanguage } = useTheme();
     const [hovered, setHovered] = useState<string | null>(null);
     const list = useMemo(

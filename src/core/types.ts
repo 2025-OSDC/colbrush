@@ -3,10 +3,7 @@ export type Vision =
     | 'deuteranopia' // 녹색맹 (초록 계열 인식 불가)
     | 'tritanopia'; // 청색맹 (파랑 계열 인식 불가)
 
-export interface ThemeGenInput {
-    vision: Vision;
-    variables: VariableInput;
-}
+// Theme 생성 입력 타입은 하단에 단일 선언로 유지합니다.
 
 export type VariableInput = Record<string, VariableRich>;
 
@@ -23,6 +20,7 @@ export interface VariableRich {
 
 export type ThemeType = Vision | 'default';
 
+// Theme 생성 입력 (중복 선언 제거)
 export interface ThemeGenInput {
     vision: Vision; // 색각 유형
     variables: VariableInput; // {"--primary-500":"#dd3f21", "--accent":{base:"#0088ff", scale:false}}
@@ -48,5 +46,7 @@ export interface ColorTransformOutput {
 
 // 색상 변환 알고리즘 인터페이스
 export interface ColorTransformAlgorithm {
-    transformColors(originalColors: VariableInput): Promise<ColorTransformOutput>;
+    transformColors(
+        originalColors: VariableInput
+    ): Promise<ColorTransformOutput>;
 }

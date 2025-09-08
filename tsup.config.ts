@@ -3,7 +3,7 @@ export default defineConfig([
     // Browser 엔트리 (라이브러리)
     {
         entry: { client: 'src/client.ts' },
-        format: ['esm'],
+        format: ['esm', 'cjs'],
         platform: 'browser',
         target: 'es2020',
         outDir: 'dist',
@@ -19,9 +19,12 @@ export default defineConfig([
             'node:url',
         ],
         clean: false,
+        outExtension: ({ format }) => ({
+            js: format === 'cjs' ? '.cjs' : '.js',
+        }),
     },
     {
-        entry: { cli: 'src/cli.ts' },
+        entry: { cli: 'src/cli/index.ts' },
         format: ['cjs'],
         platform: 'node',
         target: 'node18',

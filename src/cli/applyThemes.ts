@@ -1,17 +1,12 @@
 import fs from 'node:fs';
 import postcss, { Root, Rule } from 'postcss';
 import safeParser from 'postcss-safe-parser';
-import { buildScaleFromBaseHex } from '../utils/core/colorScale.js';
-import { variationRegex } from '../constants/regex.js';
-import { ThemeGenInput, VariableRich, Vision } from '../types/types.js';
-import { DEFAULT_KEYS } from '../constants/variation.js';
+import { buildScaleFromBaseHex } from '../core/utils/colorScale.js';
+import { variationRegex } from '../core/constants/regex.js';
+import type { ThemeGenInput, VariableRich, Vision } from '../core/types.js';
+import { DEFAULT_KEYS } from '../core/constants/variation.js';
 
 const CSS_PATH = 'src/index.css';
-
-// (필요 시) 색맹 변환 자리에 연결하는 함수. 지금은 패스스루.
-function toThemeColor(hex: string, _vision: Vision): string {
-    return hex;
-}
 
 // CSS 로드
 function loadRoot(cssPath = CSS_PATH): Root {
@@ -56,11 +51,11 @@ function upsertBlock(root: Root, selector: string, kv: Record<string, string>) {
 function getColorVariablesFromRoot(root: Root): Record<string, string> {
     const vars: Record<string, string> = {};
 
-    root.walkDecls(decl => {
+    root.walkDecls((decl) => {
         const name = decl.prop.trim();
         const value = decl.value.trim();
 
-        if (name.startsWith("--color")) {
+        if (name.startsWith('--color')) {
             vars[name] = value;
         }
     });
@@ -69,7 +64,11 @@ function getColorVariablesFromRoot(root: Root): Record<string, string> {
 }
 
 // 메인: 입력을 받아 [data-theme='...']에 반영
-export function applyThemes(input: ThemeGenInput, cssPath = CSS_PATH) {
+export function applyThemes(
+    input: ThemeGenInput,
+    cssPath = CSS_PATH,
+    opts?: { silent?: boolean }
+) {
     const root = loadRoot(cssPath);
     const originalVars = getColorVariablesFromRoot(root); // 이미 구현된 함수 사용
     const varsForTheme: Record<string, string> = {};
@@ -92,27 +91,31 @@ export function applyThemes(input: ThemeGenInput, cssPath = CSS_PATH) {
                 rich.keys && rich.keys.length
                     ? rich.keys
                     : getExistingKeysForToken(root, token).length
-                        ? getExistingKeysForToken(root, token)
-                        : Array.from(DEFAULT_KEYS);
+                      ? getExistingKeysForToken(root, token)
+                      : Array.from(DEFAULT_KEYS);
 
             if (rich.scale !== false) {
-                const scaleMap = buildScaleFromBaseHex(rich.base, { keys: keys as any });
+                const scaleMap = buildScaleFromBaseHex(rich.base, {
+                    keys: keys as any,
+                });
                 for (const k of keys) {
                     const hex = scaleMap[k as keyof typeof scaleMap];
-                    varsForTheme[`--${token}-${k}`] = toThemeColor(hex, input.vision);
+                    varsForTheme[`--${token}-${k}`] = hex;
                 }
             } else {
-                varsForTheme[varName] = toThemeColor(rich.base, input.vision);
+                varsForTheme[varName] = rich.base;
             }
         } else {
-            varsForTheme[varName] = toThemeColor(rich.base, input.vision);
+            varsForTheme[varName] = rich.base;
         }
     }
 
     // 3️⃣ varsForTheme 적용
     upsertBlock(root, `[data-theme='${input.vision}']`, varsForTheme);
     fs.writeFileSync(cssPath, root.toString(), 'utf8');
-    console.log(`✅ [${input.vision}] theme updated in ${cssPath}`);
+    if (!opts?.silent) {
+        console.log(`✅ [${input.vision}] theme updated in ${cssPath}`);
+    }
 }
 
 // 간단 값 전달 시 규칙: "--토큰-숫자"면 기본 scale=true, 아니면 false
