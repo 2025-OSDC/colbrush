@@ -80,7 +80,7 @@ export function ThemeSwitcher({ options }: Props) {
                     <div
                         role="menu"
                         aria-label="Select theme"
-                        className="fixed bottom-[100px] right-[25px] flex-col bg-[#ffffff] rounded-[18px] w-[220px] gap-[11px] shadow-[0_0_3px_0_rgba(0,0,0,0.17)]"
+                        className="fixed bottom-[100px] right-[25px] flex-col bg-[#ffffff] rounded-[18px] w-[220px] gap-[11px] filter drop-shadow-[0_0_1.3px_rgba(0,0,0,0.25)]"
                     >
                         <div>
                             {list.map((opt) => {
