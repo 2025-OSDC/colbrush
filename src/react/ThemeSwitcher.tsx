@@ -80,7 +80,7 @@ export function ThemeSwitcher({ options }: Props) {
                     <div
                         role="menu"
                         aria-label="Select theme"
-                        className="fixed bottom-[100px] right-[25px] flex-col bg-[#ffffff] rounded-[18px] w-[220px] gap-[11px]"
+                        className="fixed bottom-[100px] right-[25px] flex-col bg-[#ffffff] rounded-[18px] w-[220px] gap-[11px] filter drop-shadow-[0_0_1.3px_rgba(0,0,0,0.25)]"
                     >
                         <div>
                             {list.map((opt) => {
@@ -139,7 +139,7 @@ export function ThemeSwitcher({ options }: Props) {
                                     className={`hover:cursor-pointer flex text-[18px] text-[#3D4852] gap-[8px] items-center justify-center`}
                                     onClick={() => updateLanguage('Korean')}
                                 >
-                                    <US />
+                                    <US width={20} />
                                     English
                                 </div>
                             ) : (
@@ -147,7 +147,7 @@ export function ThemeSwitcher({ options }: Props) {
                                     className={`hover:cursor-pointer flex text-[18px] text-[#3D4852] gap-[8px] items-center justify-center `}
                                     onClick={() => updateLanguage('English')}
                                 >
-                                    <KR />
+                                    <KR width={20} />
                                     Korean
                                 </div>
                             )}
