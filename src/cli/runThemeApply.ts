@@ -116,7 +116,7 @@ export async function runThemeApply(
 
     // 색상 변환 알고리즘 호출
     try {
-        const { colorKeys, baseColorsArray, candidateList } = prepareCandidates(
+        const { colorKeys, baseColorsArray } = prepareCandidates(
             variables,
             progress
         );
@@ -127,7 +127,6 @@ export async function runThemeApply(
             const themeData = buildThemeForVision(
                 colorKeys,
                 baseColorsArray,
-                candidateList,
                 vision
             );
             progress?.update(70, 'Applying CSS...');
