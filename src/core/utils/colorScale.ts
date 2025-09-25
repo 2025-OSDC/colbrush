@@ -1,8 +1,12 @@
-import Color from 'colorjs.io';
+import ColorModule from 'colorjs.io';
 import type { Scale, ScaleKeys } from '../types.js';
 import { DEFAULT_KEYS, DEFAULT_SCALE } from '../constants/variation.js';
 
 const CLAMP01 = (x: number) => Math.max(0, Math.min(1, x));
+
+type ColorCtor = typeof ColorModule;
+
+const Color = ((ColorModule as unknown as { default?: ColorCtor }).default ?? ColorModule) as ColorCtor;
 
 function hexToOKLCH(hex: string) {
     const c = new Color(hex);
