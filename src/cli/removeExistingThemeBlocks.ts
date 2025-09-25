@@ -3,7 +3,7 @@ export function removeExistingThemeBlocks(content: string): string {
     let cleaned = content;
     for (const vision of visions) {
         const pattern = new RegExp(
-            `\\/\\*\\s*${vision} theme start\\s*\\*\\/[^]*?\\/\\*\\s*${vision} theme end\\s*\\*\\/`,
+            `\\[data-theme=['"]${vision}['"]\\][^}]*}\\s*`,
             'gm'
         );
         cleaned = cleaned.replace(pattern, '');
