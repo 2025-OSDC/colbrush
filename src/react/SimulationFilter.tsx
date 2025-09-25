@@ -12,7 +12,7 @@ import {
     VisionMode,
     VisionOptions,
 } from '../types/simulationTypes.js';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from './ThemeProvider.js';
 import { PORTAL_ID, VisionFilterPortal } from './VisionPortal.js';
 
@@ -75,7 +75,7 @@ function resolveOptions(props?: SimulationFilterProps) {
 export default function SimulationFilter(props?: SimulationFilterProps) {
     const { config, visible } = resolveOptions(props);
     const { toolbarPosition, allowInProd } = config;
-
+    const [open, setOpen] = useState(false);
     const { simulationFilter, setSimulationFilter, language } = useTheme();
     if (!visible) return null;
     if (!allowInProd && !IS_DEV) return null;
@@ -182,19 +182,25 @@ export default function SimulationFilter(props?: SimulationFilterProps) {
                 </defs>
             </svg>
             <div
-                className={`cb-vision-toolbar fixed z-[100] inline-flex items-center gap-[6px] rounded-[10px] bg-[rgba(17,17,17,0.85)] p-[6px_8px] text-[12px] text-white opacity-90 shadow-[0_6px_18px_rgba(0,0,0,0.25)] backdrop-blur-[6px] ${anchorClass}`}
+                className={`cb-vision-toolbar h-[36px] fixed z-[100] inline-flex items-center gap-[6px] rounded-[10px] bg-[rgba(17,17,17,0.85)] p-[6px_8px] text-[12px] text-white opacity-90 shadow-[0_6px_18px_rgba(0,0,0,0.25)] backdrop-blur-[6px] ${anchorClass}`}
             >
-                <span className="font-medium">Vision</span>
-                {MODES.map((value) => (
-                    <button
-                        key={value}
-                        type="button"
-                        className={`rounded-[6px] px-[6px] py-[3px] ${simulationFilter === value ? 'bg-white text-black' : 'hover:bg-[rgba(255,255,255,0.2)]'}`}
-                        onClick={() => setSimulationFilter(value)}
-                    >
-                        {MODE_LABELS[language][value] ?? value}
-                    </button>
-                ))}
+                <span
+                    className="font-medium hover:cursor-pointer"
+                    onClick={() => setOpen(!open)}
+                >
+                    Vision
+                </span>
+                {open &&
+                    MODES.map((value) => (
+                        <button
+                            key={value}
+                            type="button"
+                            className={`rounded-[6px] px-[6px] py-[3px] ${simulationFilter === value ? 'bg-white text-black' : 'hover:bg-[rgba(255,255,255,0.2)]'}`}
+                            onClick={() => setSimulationFilter(value)}
+                        >
+                            {MODE_LABELS[language][value] ?? value}
+                        </button>
+                    ))}
             </div>
         </VisionFilterPortal>
     );
