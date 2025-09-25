@@ -8,6 +8,8 @@ import {
     useMemo,
     useState,
 } from 'react';
+import { KNOWN_MODES, SimulationMode } from '../devtools/vision/modes.js';
+import { set } from 'colorjs.io/fn';
 
 export type TLanguage = 'English' | 'Korean';
 
@@ -18,7 +20,16 @@ const THEME_KEYS = [
     'deuteranopia',
     'tritanopia',
 ] as const;
+
+const SIMULATION_KEYS = [
+    'none',
+    'deuteranopia',
+    'protanopia',
+    'tritanopia',
+] as const;
+
 export type ThemeKey = (typeof THEME_KEYS)[number];
+export type SimulationKey = (typeof SIMULATION_KEYS)[number];
 
 // 2) 언어별 라벨 매핑
 export const THEME_LABEL: Record<TLanguage, Record<ThemeKey, string>> = {
@@ -45,6 +56,8 @@ type ThemeContextType = {
     language: TLanguage;
     updateTheme: (k: ThemeKey) => void;
     updateLanguage: (t: TLanguage) => void;
+    simulationFilter: SimulationKey;
+    setSimulationFilter: (value: SimulationKey) => void;
 };
 
 const KEY = 'theme';
@@ -55,6 +68,8 @@ const ThemeContext = createContext<ThemeContextType>({
     language: 'English',
     updateTheme: () => {},
     updateLanguage: () => {},
+    simulationFilter: 'none',
+    setSimulationFilter: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
@@ -79,6 +94,8 @@ type ThemeProviderProps = { children: ReactNode };
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
     const [theme, setTheme] = useState<ThemeKey>('default');
+    const [simulationFilter, setSimulationFilter] =
+        useState<SimulationKey>('none');
     const [language, setLanguage] = useState<TLanguage>('English');
 
     useEffect(() => {
@@ -107,8 +124,15 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     };
 
     const value = useMemo(
-        () => ({ theme, language, updateTheme, updateLanguage }),
-        [theme, language]
+        () => ({
+            theme,
+            language,
+            updateTheme,
+            updateLanguage,
+            simulationFilter,
+            setSimulationFilter,
+        }),
+        [theme, language, simulationFilter]
     );
 
     return (

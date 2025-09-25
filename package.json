@@ -1,6 +1,6 @@
 {
     "name": "colbrush",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "description": "A React theme switching library that makes it easy to apply color-blind accessible UI themes",
     "homepage": "https://colbrush.vercel.app",
     "repository": {
@@ -18,10 +18,21 @@
             "import": "./dist/client.js",
             "require": "./dist/client.cjs"
         },
+        "./devtools": {
+            "types": "./dist/devtools.d.ts",
+            "import": "./dist/devtools.js",
+            "require": "./dist/devtools.cjs"
+        },
         "./package.json": "./package.json"
     },
     "typesVersions": {
         "*": {
+            "devtools": [
+                "./dist/devtools.d.ts"
+            ],
+            "client": [
+                "./dist/client.d.ts"
+            ],
             "*": [
                 "./dist/client.d.ts"
             ]
