@@ -2,7 +2,10 @@ import { defineConfig } from 'tsup';
 export default defineConfig([
     // Browser 엔트리 (라이브러리)
     {
-        entry: { client: 'src/client.ts' },
+        entry: {
+            client: 'src/client.ts',
+            devtools: 'src/devtools/index.ts',
+        },
         format: ['esm', 'cjs'],
         platform: 'browser',
         target: 'es2020',
