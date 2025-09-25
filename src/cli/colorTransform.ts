@@ -3,7 +3,7 @@ import type { VariableInput, VariableRich, Vision } from '../core/types.js';
 import { inferRich } from './applyThemes.js';
 import type { ProgressReporter } from './progress.js';
 
-const ALPHA = 2.0
+const ALPHA = 1.5; // 조정 계수
 
 function colorTranslate(
   colorKeys: string[],
