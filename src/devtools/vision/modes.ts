@@ -1,5 +1,5 @@
-import { TLanguage } from '../../../client.js';
-import type { VisionMode } from '../../../types/simulationTypes.js';
+import { TLanguage } from '../../client.js';
+import { VisionMode } from '../../types/simulationTypes.js';
 
 export type SimulationMode = Exclude<VisionMode, 'none'>;
 

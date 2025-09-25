@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    DEFAULT_OPTIONS,
     FILTER_ID,
     FILTER_WRAPPER_ID,
     getMatrixForMode,
@@ -24,14 +25,61 @@ type FilterSnapshot = {
 // 필터 목표 엘리먼트별로 기존 스타일을 기억한다.
 const originalFilterMap = new WeakMap<HTMLElement, FilterSnapshot>();
 
-interface SimulationFilterSvgProps {
-    position?: VisionOptions['toolbarPosition'];
+// dev 환경 여부를 판단한다. (Node / Vite / 기타 환경 모두 지원).
+const IS_DEV = (() => {
+    if (
+        typeof process !== 'undefined' &&
+        typeof process.env?.NODE_ENV === 'string'
+    ) {
+        return process.env.NODE_ENV !== 'production';
+    }
+
+    if (
+        typeof import.meta !== 'undefined' &&
+        typeof (import.meta as unknown as { env?: { MODE?: string } }).env
+            ?.MODE === 'string'
+    ) {
+        return (
+            (import.meta as unknown as { env?: { MODE?: string } }).env!
+                .MODE !== 'production'
+        );
+    }
+
+    if (typeof window !== 'undefined') {
+        const host = window.location.hostname;
+        return host === 'localhost' || host === '127.0.0.1';
+    }
+
+    return false;
+})();
+
+type SimulationFilterProps = VisionOptions & {
+    visible?: boolean;
+};
+
+// 사용자가 전달한 옵션을 라이브러리 기본값과 합친다.
+function resolveOptions(props?: SimulationFilterProps) {
+    const { visible = true, ...options } = props ?? {};
+    const merged = {
+        ...DEFAULT_OPTIONS,
+        ...options,
+        toolbarPosition:
+            options.toolbarPosition ?? DEFAULT_OPTIONS.toolbarPosition,
+        hotkey: options.hotkey ?? DEFAULT_OPTIONS.hotkey,
+        allowInProd: options.allowInProd ?? DEFAULT_OPTIONS.allowInProd,
+    };
+
+    return { config: merged, visible };
 }
 
-export default function SimulationFilterSvg({
-    position = 'left-bottom',
-}: SimulationFilterSvgProps) {
+export default function SimulationFilter(props?: SimulationFilterProps) {
+    const { config, visible } = resolveOptions(props);
+    const { toolbarPosition, allowInProd } = config;
+
     const { simulationFilter, setSimulationFilter, language } = useTheme();
+    if (!visible) return null;
+    if (!allowInProd && !IS_DEV) return null;
+
     const ANCHOR_CLASSES: Record<ToolbarPosition, string> = {
         'left-bottom': 'left-[16px] bottom-[16px]',
         'right-bottom': 'right-[16px] bottom-[16px]',
@@ -42,7 +90,7 @@ export default function SimulationFilterSvg({
     const MODES: VisionMode[] = ['none', ...SIMULATION_MODES];
 
     const anchorClass =
-        ANCHOR_CLASSES[position] ?? ANCHOR_CLASSES['left-bottom'];
+        ANCHOR_CLASSES[toolbarPosition] ?? ANCHOR_CLASSES['left-bottom'];
 
     useEffect(() => {
         if (typeof document === 'undefined') return;
