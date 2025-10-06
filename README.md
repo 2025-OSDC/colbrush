@@ -29,7 +29,7 @@ npm install colbrush
 ---
 ## Usage
 ### 1. Define CSS variables (index.css or global CSS)
-```
+```css
 @theme {
   --color-primary-500: #7fe4c1;
   --color-secondary-yellow: #fdfa91;
@@ -102,6 +102,31 @@ export default function TestPage() {
     );
 }
 ```
+### 6. Apply SimulationFilter for vision simulation
+```
+import { SimulationFilter } from 'colbrush/devtools';
+
+function App() {
+    return (
+        <ThemeProvider>
+            <SimulationFilter
+                initialMode="normal"
+                toolbarPosition="left-bottom"
+                ...>
+                <YourApp />
+            </SimulationFilter>
+        </ThemeProvider>
+    );
+}
+```
+| **SimulationFilterProp**          | **Type**                                                          | **Default**   | **Description**           |
+| ----------------- | ----------------------------------------------------------------- | ------------- | ------------------------- |
+| `initialMode?`     | `"normal"` / `"protanopia"` / `"deuteranopia"` / `"tritanopia"`   | `"normal"`    | initial simulation mode   |
+| `toolbarPosition?` | `"top-left"` / `"top-right"` / `"bottom-left"` / `"bottom-right"` | `"top-right"` | toolbar position          |
+| `shortcut?`        | `boolean`                                                         | `true`        | enable keyboard shortcuts (⌘/Ctrl + Alt + D) |
+| `productionGuard?` | `boolean`                                                         | `false`       | block usage in production |
+
+
 ## Supported Vision Types
 | **Vision Type** | **설명** |
 | --------------- | ------ |
