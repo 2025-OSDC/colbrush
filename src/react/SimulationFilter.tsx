@@ -2,7 +2,6 @@
 
 import {
     DEFAULT_OPTIONS,
-    SIMULATION_PARAM_KEY,
     getMatrixForMode,
 } from '../core/constants/simulation.js';
 import {
