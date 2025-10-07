@@ -2,54 +2,44 @@
 
 import {
     DEFAULT_OPTIONS,
-    FILTER_ID,
-    FILTER_WRAPPER_ID,
+    SIMULATION_PARAM_KEY,
     getMatrixForMode,
 } from '../core/constants/simulation.js';
-import { MODE_LABELS, SIMULATION_MODES } from '../devtools/vision/modes.js';
 import {
-    ToolbarPosition,
-    VisionMode,
-    VisionOptions,
-} from '../types/simulationTypes.js';
-import { useEffect, useState } from 'react';
-import { useTheme } from './ThemeProvider.js';
-import { PORTAL_ID, VisionFilterPortal } from './VisionPortal.js';
+    MODE_LABELS,
+    SIMULATION_MODES,
+    isVisionMode,
+} from '../core/constants/modes.js';
+import { VisionMode, VisionOptions } from '../types/simulationTypes.js';
+import { useEffect, useRef, useState } from 'react';
+import { SimulationKey, useTheme } from './ThemeProvider.js';
+import { VisionFilterPortal } from './VisionPortal.js';
+import { TOOLBAR_POSITION } from '../core/constants/position.js';
+import {
+    FILTER_ID,
+    FILTER_WRAPPER_ID,
+    SimulationStorageKey,
+    VISION_PORTAL_ID,
+} from '../core/constants/key.js';
 
-// 원래의 filter/webkitFilter 값을 복원하기 위해 저장하는 스냅샷.
 type FilterSnapshot = {
     filter: string;
     webkitFilter: string;
 };
 
-// 필터 목표 엘리먼트별로 기존 스타일을 기억한다.
 const originalFilterMap = new WeakMap<HTMLElement, FilterSnapshot>();
 
-// dev 환경 여부를 판단한다. (Node / Vite / 기타 환경 모두 지원).
-const IS_DEV = (() => {
+const IS_DEV: boolean = (() => {
     if (
         typeof process !== 'undefined' &&
         typeof process.env?.NODE_ENV === 'string'
     ) {
         return process.env.NODE_ENV !== 'production';
     }
-
-    if (
-        typeof import.meta !== 'undefined' &&
-        typeof (import.meta as unknown as { env?: { MODE?: string } }).env
-            ?.MODE === 'string'
-    ) {
-        return (
-            (import.meta as unknown as { env?: { MODE?: string } }).env!
-                .MODE !== 'production'
-        );
-    }
-
     if (typeof window !== 'undefined') {
         const host = window.location.hostname;
         return host === 'localhost' || host === '127.0.0.1';
     }
-
     return false;
 })();
 
@@ -57,45 +47,40 @@ type SimulationFilterProps = VisionOptions & {
     visible?: boolean;
 };
 
-// 사용자가 전달한 옵션을 라이브러리 기본값과 합친다.
 function resolveOptions(props?: SimulationFilterProps) {
     const { visible = true, ...options } = props ?? {};
     const merged = {
         ...DEFAULT_OPTIONS,
         ...options,
-        toolbarPosition:
-            options.toolbarPosition ?? DEFAULT_OPTIONS.toolbarPosition,
-        hotkey: options.hotkey ?? DEFAULT_OPTIONS.hotkey,
+        storageKey: options.storageKey ?? DEFAULT_OPTIONS.storageKey,
+        position: options.position ?? DEFAULT_OPTIONS.position,
         allowInProd: options.allowInProd ?? DEFAULT_OPTIONS.allowInProd,
     };
-
     return { config: merged, visible };
 }
 
 export default function SimulationFilter(props?: SimulationFilterProps) {
     const { config, visible } = resolveOptions(props);
-    const { toolbarPosition, allowInProd } = config;
+    const { position, allowInProd, defaultMode, storageKey } = config;
     const [open, setOpen] = useState(false);
     const { simulationFilter, setSimulationFilter, language } = useTheme();
+    const initialized = useRef(false);
+
     if (!visible) return null;
     if (!allowInProd && !IS_DEV) return null;
 
-    const ANCHOR_CLASSES: Record<ToolbarPosition, string> = {
-        'left-bottom': 'left-[16px] bottom-[16px]',
-        'right-bottom': 'right-[16px] bottom-[16px]',
-        'left-top': 'left-[16px] top-[16px]',
-        'right-top': 'right-[16px] top-[16px]',
-    };
-
     const MODES: VisionMode[] = ['none', ...SIMULATION_MODES];
+    const toolBarClass =
+        TOOLBAR_POSITION[position] ?? TOOLBAR_POSITION['left-bottom'];
 
-    const anchorClass =
-        ANCHOR_CLASSES[toolbarPosition] ?? ANCHOR_CLASSES['left-bottom'];
+    const updateSimulationFilter = (value: SimulationKey) => {
+        setSimulationFilter(value);
+        localStorage.setItem(SimulationStorageKey, value);
+    };
 
     useEffect(() => {
         if (typeof document === 'undefined') return;
 
-        // 이미 필터를 적용한 루트를 찾거나, 일반적인 루트 엘리먼트를 선택한다.
         const resolveTarget = () => {
             const preferred =
                 document.querySelector('[data-cb-vision-target]') ??
@@ -107,7 +92,7 @@ export default function SimulationFilter(props?: SimulationFilterProps) {
                 document.body?.children ?? []
             ) as HTMLElement[];
             const fallback = bodyChildren.find(
-                (child) => child.id !== PORTAL_ID
+                (child) => child.id !== VISION_PORTAL_ID
             );
             return fallback ?? document.body;
         };
@@ -131,14 +116,12 @@ export default function SimulationFilter(props?: SimulationFilterProps) {
             webkitFilter: '',
         };
 
-        // 현재 모드에 맞는 필터를 적용한다.
         const applyFilter = () => {
             const filterValue = `url(#${FILTER_ID})`;
             style.filter = filterValue;
             style.webkitFilter = filterValue;
         };
 
-        // 모드가 none이 되면 원래 filter 값을 복구한다.
         const clearFilter = () => {
             style.filter = snapshot.filter;
             style.webkitFilter = snapshot.webkitFilter;
@@ -176,13 +159,16 @@ export default function SimulationFilter(props?: SimulationFilterProps) {
                     <filter id={FILTER_ID} data-cb-vision-managed="true">
                         <feColorMatrix
                             type="matrix"
-                            values={getMatrixForMode(simulationFilter)}
+                            values={getMatrixForMode(
+                                simulationFilter as VisionMode
+                            )}
                         />
                     </filter>
                 </defs>
             </svg>
+
             <div
-                className={`cb-vision-toolbar h-[36px] fixed z-[100] inline-flex items-center gap-[6px] rounded-[10px] bg-[rgba(17,17,17,0.85)] p-[6px_8px] text-[12px] text-white opacity-90 shadow-[0_6px_18px_rgba(0,0,0,0.25)] backdrop-blur-[6px] ${anchorClass}`}
+                className={`cb-vision-toolbar h-[36px] fixed z-[100] inline-flex items-center gap-[6px] rounded-[10px] bg-[rgba(17,17,17,0.85)] p-[6px_8px] text-[12px] text-white opacity-90 shadow-[0_6px_18px_rgba(0,0,0,0.25)] backdrop-blur-[6px] ${toolBarClass}`}
             >
                 <span
                     className="font-medium hover:cursor-pointer"
@@ -190,13 +176,18 @@ export default function SimulationFilter(props?: SimulationFilterProps) {
                 >
                     Vision
                 </span>
+
                 {open &&
                     MODES.map((value) => (
                         <button
                             key={value}
                             type="button"
-                            className={`rounded-[6px] px-[6px] py-[3px] ${simulationFilter === value ? 'bg-white text-black' : 'hover:bg-[rgba(255,255,255,0.2)]'}`}
-                            onClick={() => setSimulationFilter(value)}
+                            className={`rounded-[6px] px-[6px] py-[3px] ${
+                                simulationFilter === value
+                                    ? 'bg-white text-black'
+                                    : 'hover:bg-[rgba(255,255,255,0.2)]'
+                            }`}
+                            onClick={() => updateSimulationFilter(value)}
                         >
                             {MODE_LABELS[language][value] ?? value}
                         </button>
