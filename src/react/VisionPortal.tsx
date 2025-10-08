@@ -2,10 +2,7 @@
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { FILTER_WRAPPER_ID } from '../core/constants/simulation.js';
-
-// 공유 포털 노드 id — 필터/툴바가 모두 동일한 컨테이너를 사용하도록 고정한다.
-export const PORTAL_ID = 'cb-vision-portal';
+import { FILTER_WRAPPER_ID, VISION_PORTAL_ID } from '../core/constants/key.js';
 
 let portalEl: HTMLElement | null = null;
 let activeOwner: symbol | null = null;
@@ -15,10 +12,12 @@ function ensurePortal(): HTMLElement {
         throw new Error('No document available');
     if (portalEl && document.body.contains(portalEl)) return portalEl;
 
-    const existing = document.getElementById(PORTAL_ID) as HTMLElement | null;
+    const existing = document.getElementById(
+        VISION_PORTAL_ID
+    ) as HTMLElement | null;
     portalEl =
         existing ??
-        Object.assign(document.createElement('div'), { id: PORTAL_ID });
+        Object.assign(document.createElement('div'), { id: VISION_PORTAL_ID });
     if (!existing) document.body.appendChild(portalEl);
     return portalEl;
 }

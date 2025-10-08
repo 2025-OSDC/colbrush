@@ -2,22 +2,19 @@ import type {
     ResolvedOptions,
     VisionMode,
 } from '../../types/simulationTypes.js';
-import type { SimulationMode } from '../../devtools/vision/modes.js';
-
-export const TOOLBAR_ID = 'cb-vision-toolbar';
-export const STYLE_ID = 'cb-vision-style';
-export const FILTER_ID = 'cb-vision-filter';
-export const FILTER_WRAPPER_ID = 'cb-vision-filter-root';
+import { SimulationStorageKey } from './key.js';
+import type { SimulationMode } from './modes.js';
+import { Position } from './position.js';
 
 export const DEFAULT_DEV_HOST_PATTERN =
     /(^localhost$)|(^127\.0\.0\.1$)|(^10\.)|(^172\.(1[6-9]|2\d|3[0-1])\.)|(^192\.168\.)/;
 
+export const SIMULATION_PARAM_KEY = 'vision';
+
 export const DEFAULT_OPTIONS: ResolvedOptions = {
     defaultMode: 'none',
-    paramKey: 'vision',
-    storageKey: 'colbrush:vision',
-    toolbarPosition: 'left-bottom',
-    hotkey: true,
+    storageKey: SimulationStorageKey,
+    position: Position[0],
     allowInProd: false,
 };
 
