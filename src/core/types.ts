@@ -3,6 +3,9 @@ export type Vision =
     | 'deuteranopia' // 녹색맹 (초록 계열 인식 불가)
     | 'tritanopia'; // 청색맹 (파랑 계열 인식 불가)
 
+export type VisionMode = Vision | 'none';
+export type TThemeKey = Vision | 'default';
+
 // Theme 생성 입력 타입은 하단에 단일 선언로 유지합니다.
 
 export type VariableInput = Record<string, VariableRich>;
@@ -17,8 +20,6 @@ export interface VariableRich {
     keys?: string[]; // 스케일 키셋(선택)
     anchor?: string; // "500" 등 (현재 로직에선 anchor는 참고용)
 }
-
-export type ThemeType = Vision | 'default';
 
 // Theme 생성 입력 (중복 선언 제거)
 export interface ThemeGenInput {

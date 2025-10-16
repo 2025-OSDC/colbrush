@@ -1,12 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useMemo } from 'react';
-import {
-    useTheme,
-    getThemeOptions,
-    THEME_LABEL,
-    type ThemeKey,
-} from './ThemeProvider.js';
+import { useTheme, getThemeOptions, type ThemeKey } from './ThemeProvider.js';
 import Logo from '../icons/Logo.js';
 import US from '../icons/Us.js';
 import KR from '../icons/Kr.js';
@@ -16,6 +11,11 @@ import IconDefault from '../icons/theme/Default.js';
 import IconProtanopia from '../icons/theme/Protanopia.js';
 import IconDeuteranopia from '../icons/theme/Deuteranopia.js';
 import { ThemeSwitcherPortal } from './ThemeSwitcherPortal.js';
+import { Position } from '../types/simulationTypes.js';
+import {
+    SWITCHER_MENU_POSITION,
+    SWITCHER_POSITION,
+} from '../core/constants/position.js';
 
 const THEME_ICON: Record<ThemeKey, React.FC<React.SVGProps<SVGSVGElement>>> = {
     default: IconDefault,
@@ -23,11 +23,13 @@ const THEME_ICON: Record<ThemeKey, React.FC<React.SVGProps<SVGSVGElement>>> = {
     deuteranopia: IconDeuteranopia,
     tritanopia: IconTritanopia,
 };
-type Props = {
+
+type TThemeSwitcherProps = {
     options?: { key: ThemeKey; label: string }[]; // ← 라벨/키 쌍으로 받기
+    position?: Position;
 };
 
-export function ThemeSwitcher({ options }: Props) {
+export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
     const { theme, updateTheme, language, updateLanguage } = useTheme();
     const [hovered, setHovered] = useState<string | null>(null);
     const list = useMemo(
@@ -37,7 +39,10 @@ export function ThemeSwitcher({ options }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    // 바깥 클릭 닫기
+    const switcherClass = SWITCHER_POSITION[position ?? 'right-bottom'];
+    const switcherMenuClass =
+        SWITCHER_MENU_POSITION[position ?? 'right-bottom'];
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -66,7 +71,9 @@ export function ThemeSwitcher({ options }: Props) {
                     aria-haspopup="menu"
                     aria-expanded={isOpen}
                     onClick={toggle}
-                    className="fixed right-[25px] bottom-[25px] w-[60px] h-[60px] p-[10px] bg-[#ffffff] rounded-full flex justify-center items-center shadow-[0_0_3px_0_rgba(0,0,0,0.17)]"
+                    className={`fixed w-[60px] h-[60px] p-[10px] bg-[#ffffff] rounded-full flex justify-center items-center shadow-[0_0_3px_0_rgba(0,0,0,0.17)]
+                    ${switcherClass}
+                        `}
                 >
                     {isOpen ? (
                         <XButton className="self-center" />
@@ -80,7 +87,10 @@ export function ThemeSwitcher({ options }: Props) {
                     <div
                         role="menu"
                         aria-label="Select theme"
-                        className="fixed bottom-[100px] right-[25px] flex-col bg-[#ffffff] rounded-[18px] w-[220px] gap-[11px] filter drop-shadow-[0_0_1.3px_rgba(0,0,0,0.25)]"
+                        className={`
+                            fixed flex-col bg-[#ffffff] rounded-[18px] w-[220px] gap-[11px] filter drop-shadow-[0_0_1.3px_rgba(0,0,0,0.25)]
+                            ${switcherMenuClass}
+                            `}
                     >
                         <div>
                             {list.map((opt) => {
