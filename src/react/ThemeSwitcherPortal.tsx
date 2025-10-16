@@ -1,8 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-
-const PORTAL_ID = 'theme-switcher-portal';
+import { THEME_SWITCHER_PORTAL_ID } from '../core/constants/key.js';
 
 // 모듈 전역: 컨테이너 싱글턴 & 활성 인스턴스 추적
 let portalEl: HTMLElement | null = null;
@@ -12,10 +11,14 @@ function ensurePortal(): HTMLElement {
     if (typeof document === 'undefined') throw new Error('No document');
     if (portalEl && document.body.contains(portalEl)) return portalEl;
 
-    const existing = document.getElementById(PORTAL_ID) as HTMLElement | null;
+    const existing = document.getElementById(
+        THEME_SWITCHER_PORTAL_ID
+    ) as HTMLElement | null;
     portalEl =
         existing ??
-        Object.assign(document.createElement('div'), { id: PORTAL_ID });
+        Object.assign(document.createElement('div'), {
+            id: THEME_SWITCHER_PORTAL_ID,
+        });
     if (!existing) document.body.appendChild(portalEl);
     return portalEl;
 }
