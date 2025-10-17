@@ -24,7 +24,7 @@ function colorTranslate(
         newLab[2] += ALPHA * lab[1]; // a* -> b* 매핑
         break;
       case "tritanopia":
-        newLab[1] += ALPHA * 0.2 * lab[2]; // b* -> a* 매핑
+        newLab[1] -= ALPHA * 0.5 * lab[2]; // b* -> a* 매핑
         break;
     }
 
