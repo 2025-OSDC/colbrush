@@ -27,7 +27,6 @@ export async function runThemeApply(
     cssPath: string,
     progress?: ProgressReporter
 ): Promise<RunThemeApplyResult> {
-    const quiet = !progress; // progress가 없으면 quiet mode
     const result: RunThemeApplyResult = {
         variables: { found: 0, processed: 0, skipped: 0 },
         themes: []
@@ -36,24 +35,18 @@ export async function runThemeApply(
     try {
         let content = fs.readFileSync(cssPath, 'utf8');
 
-        if (!quiet) {
-            progress?.startSection('🧹 Preparing workspace');
-            progress?.update(50, 'Removing existing themes...');
-        }
+        progress?.startSection('🧹 Preparing workspace');
+        progress?.update(50, 'Removing existing themes...');
 
         content = removeExistingThemeBlocks(content);
 
-        if (!quiet) {
-            progress?.update(100, 'Workspace cleaned');
-            progress?.finishSection();
-        }
+        progress?.update(100, 'Workspace cleaned');
+        progress?.finishSection();
 
         const variables: VariableInput = {};
 
         // CSS 변수 추출
-        if (!quiet) {
-            progress?.startSection('🔍 Analyzing CSS variables');
-        }
+        progress?.startSection('🔍 Analyzing CSS variables');
 
         const scanRegex = new RegExp(variableRegex.source, variableRegex.flags);
         const all = Array.from(content.matchAll(scanRegex));
@@ -92,14 +85,10 @@ export async function runThemeApply(
             variables[cleanKey] = { base: cleanValue, scale };
             result.variables.processed++;
 
-            if (!quiet && progress) {
-                progress.update(percent, `Found: ${cleanKey}`);
-            }
+            progress?.update(percent, `Found: ${cleanKey}`);
         }
 
-        if (!quiet) {
-            progress?.finishSection(`Found ${result.variables.processed} color variables`);
-        }
+        progress?.finishSection(`Found ${result.variables.processed} color variables`);
 
         if (result.variables.processed === 0) {
             throw createCLIError(
@@ -121,25 +110,20 @@ export async function runThemeApply(
             for (const vision of VISIONS) {
                 const visionStartTime = Date.now();
                 const label = VISION_LABELS[vision];
+                const hideIndividualThemeLog = !!progress;
 
-                if (!quiet) {
-                    progress?.startSection(label);
-                }
+                progress?.startSection(label);
 
                 try {
-                    if (!quiet && progress) {
-                        progress.update(50, 'Processing...');
-                    }
+                    progress?.update(50, 'Processing...');
 
                     const themeData = buildThemeForVision(colorKeys, baseColorsArray, vision);
-                    await applyThemes(themeData, cssPath, { silent: !!progress });
+                    await applyThemes(themeData, cssPath, { silent: hideIndividualThemeLog });
 
                     const executionTime = (Date.now() - visionStartTime) / 1000;
 
-                    if (!quiet) {
-                        progress?.update(100, 'Theme generated successfully');
-                        progress?.finishSection('✅ Complete');
-                    }
+                    progress?.update(100, 'Theme generated successfully');
+                    progress?.finishSection('✅ Complete');
 
                     result.themes.push({
                         type: vision,
@@ -149,17 +133,13 @@ export async function runThemeApply(
                     });
 
                 } catch (visionError) {
-                    if (!quiet && progress) {
-                        progress.update(75, 'Failed optimized generation, using fallback...');
-                    }
+                    progress?.update(75, 'Failed optimized generation, using fallback...');
 
-                    await applyThemes({ vision, variables }, cssPath, { silent: !!progress });
+                    await applyThemes({ vision, variables }, cssPath, { silent: hideIndividualThemeLog });
 
                     const executionTime = (Date.now() - visionStartTime) / 1000;
 
-                    if (!quiet) {
-                        progress?.finishSection('⚠️ Fallback applied');
-                    }
+                    progress?.finishSection('⚠️ Fallback applied');
 
                     result.themes.push({
                         type: vision,
@@ -171,25 +151,20 @@ export async function runThemeApply(
             }
 
         } catch (error) {
-            if (!quiet && progress) {
-                progress.update(50, '🔄 Using fallback color mapping for all themes...');
-            }
+            const hideIndividualThemeLog = !!progress;
+            progress?.update(50, '🔄 Using fallback color mapping for all themes...');
 
             for (const vision of VISIONS) {
                 const visionStartTime = Date.now();
                 const label = `${VISION_LABELS[vision]} (Fallback)`;
 
-                if (!quiet) {
-                    progress?.startSection(label);
-                }
+                progress?.startSection(label);
 
-                await applyThemes({ vision, variables }, cssPath, { silent: !!progress });
+                await applyThemes({ vision, variables }, cssPath, { silent: hideIndividualThemeLog });
 
                 const executionTime = (Date.now() - visionStartTime) / 1000;
 
-                if (!quiet) {
-                    progress?.finishSection('⚠️ Fallback applied');
-                }
+                progress?.finishSection('⚠️ Fallback applied');
 
                 result.themes.push({
                     type: vision,
@@ -201,7 +176,7 @@ export async function runThemeApply(
         }
 
         // 최종 요약
-        if (!quiet) {
+        if (progress) {
             const successCount = result.themes.filter(t => t.status === 'success').length;
             const fallbackCount = result.themes.filter(t => t.status === 'fallback').length;
 
