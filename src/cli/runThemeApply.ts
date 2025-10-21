@@ -1,152 +1,257 @@
 import { variableRegex } from '../core/constants/regex.js';
-import type { VariableRich, Vision, VariableInput } from '../core/types.js';
+import type { VariableInput } from '../core/types.js';
 import { applyThemes } from './applyThemes.js';
 import { prepareCandidates, buildThemeForVision } from './colorTransform.js';
-import fs from 'node:fs';
 import { removeExistingThemeBlocks } from './removeExistingThemeBlocks.js';
+import { isNeutralColor, calculateScale } from './utils/colorUtils.js';
+import { createCLIError } from './utils/errors.js';
+import { VISIONS, VISION_LABELS } from './constants.js';
 import type { ProgressReporter } from './progress.js';
+import fs from 'node:fs';
 
-// HEX → RGB 변환
-export function hexToRgb(hex: string): [number, number, number] | null {
-    let clean = hex.replace('#', '').toLowerCase();
-    if (clean.length === 3) {
-        clean = clean
-            .split('')
-            .map((c) => c + c)
-            .join('');
-    }
-    if (clean.length !== 6) return null;
-
-    const r = parseInt(clean.substring(0, 2), 16);
-    const g = parseInt(clean.substring(2, 4), 16);
-    const b = parseInt(clean.substring(4, 6), 16);
-
-    return [r, g, b];
-}
-
-// 무채색 판별: R,G,B 값이 완전히 같을 때만 true
-export function isNeutralColor(value: string): boolean {
-    const rgb = hexToRgb(value);
-    if (!rgb) return false;
-
-    const [r, g, b] = rgb;
-    return r === g && g === b;
-}
-
-// 흑백 색상 감지 함수
-function isBlackOrWhite(hexColor: string): boolean {
-    const hex = hexColor.toLowerCase().replace('#', '');
-    const fullHex =
-        hex.length === 3
-            ? hex
-                  .split('')
-                  .map((char) => char + char)
-                  .join('')
-            : hex;
-
-    const r = parseInt(fullHex.substr(0, 2), 16);
-    const g = parseInt(fullHex.substr(2, 2), 16);
-    const b = parseInt(fullHex.substr(4, 2), 16);
-
-    const isWhite = r >= 250 && g >= 250 && b >= 250;
-    const isBlack = r <= 10 && g <= 10 && b <= 10;
-
-    return isWhite || isBlack;
-}
-
-// scale 값 계산 함수
-export function calculateScale(varName: string, hexColor: string): boolean {
-    if (isBlackOrWhite(hexColor)) {
-        return false;
-    }
-
-    return /\d+$/.test(varName);
+export interface RunThemeApplyResult {
+    variables: {
+        found: number;
+        processed: number;
+        skipped: number;
+    };
+    themes: Array<{
+        type: string;
+        status: 'success' | 'fallback' | 'error';
+        variables: number;
+        executionTime: number;
+    }>;
 }
 
 export async function runThemeApply(
     cssPath: string,
     progress?: ProgressReporter
-) {
-    if (!fs.existsSync(cssPath)) {
-        throw new Error(`❌ CSS 파일이 존재하지 않습니다: ${cssPath}`);
-    }
+): Promise<RunThemeApplyResult> {
+    const result: RunThemeApplyResult = {
+        variables: { found: 0, processed: 0, skipped: 0 },
+        themes: []
+    };
 
-    let content = fs.readFileSync(cssPath, 'utf8');
-
-    // Section 1: theme 중복 생성 방지를 위해 기존에 존재하는 theme 블록 제거
-    progress?.startSection('Remove existing theme blocks');
-    content = removeExistingThemeBlocks(content);
-    progress?.update(100);
-    progress?.finishSection('Done');
-    const variables: VariableInput = {};
-
-    // Section 2: CSS에서 변수 추출
-    progress?.startSection('Extract variables');
-    const scanRegex = new RegExp(variableRegex.source, variableRegex.flags);
-    const all = Array.from(content.matchAll(scanRegex));
-    const totalVars = all.length || 1;
-    const loopRegex = new RegExp(variableRegex.source, variableRegex.flags);
-    let match;
-    let count = 0;
-    while ((match = loopRegex.exec(content)) !== null) {
-        const [, key, value] = match;
-
-        const cleanKey = key.trim();
-
-        const cleanValue = value.trim().toLowerCase();
-
-        if (isNeutralColor(cleanValue)) {
-            count++;
-            progress?.update((count / totalVars) * 100);
-            continue;
-        }
-
-        const scale = calculateScale(cleanKey, cleanValue);
-        const rich: VariableRich = {
-            base: cleanValue,
-            scale,
-        };
-        variables[cleanKey] = rich;
-        count++;
-        progress?.update((count / totalVars) * 100);
-    }
-    progress?.finishSection('Done');
-
-    const visions: Vision[] = ['deuteranopia', 'protanopia', 'tritanopia'];
-
-    // 색상 변환 알고리즘 호출
     try {
-        const { colorKeys, baseColorsArray } = prepareCandidates(
-            variables,
-            progress
-        );
-        for (const vision of visions) {
-            const label = `Process — ${vision}`;
-            progress?.startSection(label);
-            progress?.update(30, 'Optimizing...');
-            const themeData = buildThemeForVision(
-                colorKeys,
-                baseColorsArray,
-                vision
-            );
-            progress?.update(70, 'Applying CSS...');
-            await applyThemes(themeData, cssPath, { silent: !!progress });
-            progress?.update(100, 'Done');
-            progress?.finishSection('Done');
-        }
-    } catch (error) {
-        console.log('🚀 ~ runThemeApply ~ error:', error);
-        // 에러 발생 시 원본 색상으로 폴백
-        for (const vision of visions) {
-            const label = `Process (fallback) — ${vision}`;
-            progress?.startSection(label);
-            await applyThemes({ vision, variables }, cssPath, {
-                silent: !!progress,
-            });
-            progress?.finishSection('Done');
-        }
-    }
+        let content = fs.readFileSync(cssPath, 'utf8');
 
-    // 섹션 기반이므로 전체 finish는 생략
-    console.log(`\n✅ Colbrush themes applied to ${cssPath}`);
+        progress?.startSection('🧹 Preparing workspace');
+        progress?.update(50, 'Removing existing themes...');
+
+        content = removeExistingThemeBlocks(content);
+
+        progress?.update(100, 'Workspace cleaned');
+        progress?.finishSection();
+
+        const variables: VariableInput = {};
+
+        // CSS 변수 추출
+        progress?.startSection('🔍 Analyzing CSS variables');
+
+        const scanRegex = new RegExp(variableRegex.source, variableRegex.flags);
+        const all = Array.from(content.matchAll(scanRegex));
+        result.variables.found = all.length;
+
+        if (all.length === 0) {
+            throw createCLIError(
+                'No CSS custom properties found',
+                4,
+                [
+                    'Add CSS variables to your file using @theme { }',
+                    'Example: --color-primary-500: #7fe4c1;',
+                    'Make sure variables start with --color-'
+                ]
+            );
+        }
+
+        const loopRegex = new RegExp(variableRegex.source, variableRegex.flags);
+        let match;
+        let count = 0;
+
+        while ((match = loopRegex.exec(content)) !== null) {
+            const [, key, value] = match;
+            const cleanKey = key.trim();
+            const cleanValue = value.trim().toLowerCase();
+
+            count++;
+            const percent = (count / all.length) * 100;
+
+            if (isNeutralColor(cleanValue)) {
+                result.variables.skipped++;
+                continue;
+            }
+
+            const scale = calculateScale(cleanKey, cleanValue);
+            variables[cleanKey] = { base: cleanValue, scale };
+            result.variables.processed++;
+
+            progress?.update(percent, `Found: ${cleanKey}`);
+        }
+
+        progress?.finishSection(`Found ${result.variables.processed} color variables`);
+
+        if (result.variables.processed === 0) {
+            throw createCLIError(
+                'No processable color variables found',
+                4,
+                [
+                    'Ensure you have non-neutral colors in HEX format',
+                    'Example: --color-primary: #7fe4c1; (not #ffffff or #000000)',
+                    'Variables should start with --color-'
+                ]
+            );
+        }
+
+        // 테마 생성
+        // 색상 변환 처리
+        try {
+            const { colorKeys, baseColorsArray } = prepareCandidates(variables, progress);
+
+            for (const vision of VISIONS) {
+                const visionStartTime = Date.now();
+                const label = VISION_LABELS[vision];
+                const hideIndividualThemeLog = !!progress;
+
+                progress?.startSection(label);
+
+                try {
+                    progress?.update(50, 'Processing...');
+
+                    const themeData = buildThemeForVision(colorKeys, baseColorsArray, vision);
+                    await applyThemes(themeData, cssPath, { silent: hideIndividualThemeLog });
+
+                    const executionTime = (Date.now() - visionStartTime) / 1000;
+
+                    progress?.update(100, 'Theme generated successfully');
+                    progress?.finishSection('✅ Complete');
+
+                    result.themes.push({
+                        type: vision,
+                        status: 'success',
+                        variables: result.variables.processed,
+                        executionTime
+                    });
+
+                } catch (visionError) {
+                    progress?.update(75, 'Failed optimized generation, using fallback...');
+
+                    await applyThemes({ vision, variables }, cssPath, { silent: hideIndividualThemeLog });
+
+                    const executionTime = (Date.now() - visionStartTime) / 1000;
+
+                    progress?.finishSection('⚠️ Fallback applied');
+
+                    result.themes.push({
+                        type: vision,
+                        status: 'fallback',
+                        variables: result.variables.processed,
+                        executionTime
+                    });
+                }
+            }
+
+        } catch (error) {
+            const hideIndividualThemeLog = !!progress;
+            progress?.update(50, '🔄 Using fallback color mapping for all themes...');
+
+            for (const vision of VISIONS) {
+                const visionStartTime = Date.now();
+                const label = `${VISION_LABELS[vision]} (Fallback)`;
+
+                progress?.startSection(label);
+
+                await applyThemes({ vision, variables }, cssPath, { silent: hideIndividualThemeLog });
+
+                const executionTime = (Date.now() - visionStartTime) / 1000;
+
+                progress?.finishSection('⚠️ Fallback applied');
+
+                result.themes.push({
+                    type: vision,
+                    status: 'fallback',
+                    variables: result.variables.processed,
+                    executionTime
+                });
+            }
+        }
+
+        // 최종 요약
+        if (progress) {
+            const successCount = result.themes.filter(t => t.status === 'success').length;
+            const fallbackCount = result.themes.filter(t => t.status === 'fallback').length;
+
+            console.log('\n📊 Generation Results:');
+            result.themes.forEach(theme => {
+                const label = VISION_LABELS[theme.type as keyof typeof VISION_LABELS];
+                const status = theme.status === 'success' ? '✅ Success' :
+                             theme.status === 'fallback' ? '⚠️ Fallback' : '❌ Error';
+                console.log(`  ${label}: ${status} (${theme.variables} colors, ${theme.executionTime.toFixed(1)}s)`);
+            });
+
+            console.log('\n📋 Summary:');
+            console.log(`  Input file: ${cssPath}`);
+            console.log(`  Variables found: ${result.variables.found}`);
+            console.log(`  Variables processed: ${result.variables.processed}`);
+            console.log(`  Variables skipped: ${result.variables.skipped}`);
+            console.log(`  Themes generated: ${result.themes.length}`);
+            console.log(`  Success rate: ${successCount}/${result.themes.length}`);
+            if (fallbackCount > 0) {
+                console.log(`  Fallback used: ${fallbackCount}`);
+            }
+
+            // 결과에 따른 메시지
+            if (successCount === result.themes.length) {
+                console.log('\n🎉 All themes generated with optimized colors!');
+            } else if (successCount > 0) {
+                console.log(`\n⚠️ ${fallbackCount} themes used fallback mapping`);
+                console.log('💡 This may result in less optimal color accessibility');
+            } else {
+                console.log('\n⚠️ All themes used fallback mapping');
+                console.log('💡 Consider adjusting your base color palette for better results');
+            }
+        }
+
+        return result;
+
+    } catch (error) {
+        if (error instanceof Error && (error as any).code) {
+            throw error; // Re-throw CLI errors as-is
+        }
+
+        if (error instanceof Error) {
+            // 파일 없음 에러
+            if (error.message.includes('ENOENT')) {
+                throw createCLIError(
+                    `File not found: ${cssPath}`,
+                    2,
+                    ['Check if the file path is correct', 'Use --css to specify the correct path']
+                );
+            }
+
+            // 권한 에러
+            if (error.message.includes('EACCES')) {
+                throw createCLIError(
+                    `Permission denied: ${cssPath}`,
+                    6,
+                    ['Check file permissions', 'Run with appropriate privileges']
+                );
+            }
+
+            // CSS 파싱 에러
+            if (error.message.includes('parse') || error.message.includes('syntax')) {
+                throw createCLIError(
+                    `CSS parsing failed: ${error.message}`,
+                    3,
+                    ['Check CSS syntax in your file']
+                );
+            }
+        }
+
+        // 일반적인 에러
+        throw createCLIError(
+            `Unexpected error: ${error instanceof Error ? error.message : String(error)}`,
+            1,
+            ['Please double-check your CSS file for any syntax errors.', ' Try running `colbrush --doctor` to diagnose your system.', 'Update the package to the latest version and try again.']
+        );
+    }
 }
