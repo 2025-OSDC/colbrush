@@ -21,7 +21,7 @@ export const MODE_LABELS: Record<TLanguage, Record<VisionMode, string>> = {
         tritanopia: 'tritanopia',
     },
     Korean: {
-        none: '꺼짐',
+        none: '기본',
         protanopia: '적색맹',
         deuteranopia: '녹색맹',
         tritanopia: '청색맹',
