@@ -6,6 +6,7 @@ import {
 } from '../core/constants/simulation.js';
 import {
     MODE_LABELS,
+    SIMULATE_LABEL,
     SIMULATION_MODES,
     isVisionMode,
 } from '../core/constants/modes.js';
@@ -167,21 +168,29 @@ export default function SimulationFilter(props?: SimulationFilterProps) {
             </svg>
 
             <div
-                className={`cb-vision-toolbar h-[36px] fixed z-[100] inline-flex items-center gap-[6px] rounded-[10px] bg-[rgba(17,17,17,0.85)] p-[6px_8px] text-[12px] text-white opacity-90 shadow-[0_6px_18px_rgba(0,0,0,0.25)] backdrop-blur-[6px] ${toolBarClass}`}
+                className={`cb-vision-toolbar h-[34px] fixed z-[100] inline-flex items-center gap-[6px] rounded-[8px] bg-[#555555] px-[18px] py-2 text-[14px] text-white font-medium opacity-90 shadow-[0_6px_18px_rgba(0,0,0,0.25)] backdrop-blur-[6px] ${toolBarClass}`}
             >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M18 9C18 9 14.625 2.8125 9 2.8125C3.375 2.8125 0 9 0 9C0 9 3.375 15.1875 9 15.1875C14.625 15.1875 18 9 18 9ZM1.31929 9C1.38333 8.90236 1.45636 8.79387 1.53818 8.67647C1.91493 8.13592 2.47085 7.41702 3.18612 6.70175C4.63616 5.2517 6.6157 3.9375 9 3.9375C11.3843 3.9375 13.3638 5.2517 14.8139 6.70175C15.5292 7.41702 16.0851 8.13592 16.4618 8.67647C16.5436 8.79387 16.6167 8.90236 16.6807 9C16.6167 9.09764 16.5436 9.20613 16.4618 9.32353C16.0851 9.86408 15.5292 10.583 14.8139 11.2983C13.3638 12.7483 11.3843 14.0625 9 14.0625C6.6157 14.0625 4.63616 12.7483 3.18612 11.2983C2.47085 10.583 1.91493 9.86408 1.53818 9.32353C1.45636 9.20613 1.38333 9.09764 1.31929 9Z" fill="white"/>
+                    <path d="M9 6.1875C7.4467 6.1875 6.1875 7.4467 6.1875 9C6.1875 10.5533 7.4467 11.8125 9 11.8125C10.5533 11.8125 11.8125 10.5533 11.8125 9C11.8125 7.4467 10.5533 6.1875 9 6.1875ZM5.0625 9C5.0625 6.82538 6.82538 5.0625 9 5.0625C11.1746 5.0625 12.9375 6.82538 12.9375 9C12.9375 11.1746 11.1746 12.9375 9 12.9375C6.82538 12.9375 5.0625 11.1746 5.0625 9Z" fill="white"/>
+                </svg>
                 <span
-                    className="font-medium hover:cursor-pointer"
+                    className="font-medium hover:cursor-pointer ml-[11px]"
                     onClick={() => setOpen(!open)}
                 >
-                    Vision
+                    {SIMULATE_LABEL[language]}
                 </span>
+
+                {open && (
+                    <div className="w-0 h-5 mx-3 outline outline-[0.40px] outline-offset-[-0.20px] outline-[#909090]" />
+                )}
 
                 {open &&
                     MODES.map((value) => (
                         <button
                             key={value}
                             type="button"
-                            className={`rounded-[6px] px-[6px] py-[3px] ${
+                            className={`rounded-[8px] px-2 py-1 text-[12px] font-normal ${
                                 simulationFilter === value
                                     ? 'bg-white text-black'
                                     : 'hover:bg-[rgba(255,255,255,0.2)]'

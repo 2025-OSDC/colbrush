@@ -4,15 +4,12 @@ import { TThemeKey, VisionMode } from '../types.js';
 export type SimulationMode = Exclude<VisionMode, 'none'>;
 
 export const SIMULATION_MODES: SimulationMode[] = [
-    'deuteranopia',
     'protanopia',
+    'deuteranopia',
     'tritanopia',
 ];
 
-export const THEME_MODES: TThemeKey[] = [
-    'default',
-    ...SIMULATION_MODES,
-];
+export const THEME_MODES: TThemeKey[] = ['default', ...SIMULATION_MODES];
 
 export const VISION_MODES: VisionMode[] = ['none', ...SIMULATION_MODES];
 
@@ -24,7 +21,7 @@ export const MODE_LABELS: Record<TLanguage, Record<VisionMode, string>> = {
         tritanopia: 'tritanopia',
     },
     Korean: {
-        none: '꺼짐',
+        none: '기본',
         protanopia: '적색맹',
         deuteranopia: '녹색맹',
         tritanopia: '청색맹',
@@ -44,6 +41,11 @@ export const THEME_LABEL: Record<TLanguage, Record<TThemeKey, string>> = {
         deuteranopia: '녹색맹',
         tritanopia: '청색맹',
     },
+};
+
+export const SIMULATE_LABEL: Record<TLanguage, string> = {
+    English: 'Simulate',
+    Korean: '시뮬레이션',
 };
 
 export function isVisionMode(value: string | null): value is VisionMode {
