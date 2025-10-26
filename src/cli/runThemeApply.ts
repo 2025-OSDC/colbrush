@@ -115,7 +115,11 @@ export async function runThemeApply(
                 progress?.startSection(label);
 
                 try {
+                    progress?.update(0, 'Starting...');
+                    await new Promise(resolve => setTimeout(resolve, 150));
+
                     progress?.update(50, 'Processing...');
+                    await new Promise(resolve => setTimeout(resolve, 200));
 
                     const themeData = buildThemeForVision(colorKeys, baseColorsArray, vision);
                     await applyThemes(themeData, cssPath, { silent: hideIndividualThemeLog });
@@ -123,6 +127,7 @@ export async function runThemeApply(
                     const executionTime = (Date.now() - visionStartTime) / 1000;
 
                     progress?.update(100, 'Theme generated successfully');
+                    await new Promise(resolve => setTimeout(resolve, 150));
                     progress?.finishSection('✅ Complete');
 
                     result.themes.push({
