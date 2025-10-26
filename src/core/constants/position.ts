@@ -28,6 +28,6 @@ export const SWITCHER_MENU_POSITION: Record<TPosition, string> = {
 export const TOOLBAR_POSITION: Record<TPosition, string> = {
     'left-bottom': 'left-[16px] bottom-[16px]',
     'right-bottom': 'right-[16px] bottom-[16px]',
-    'left-top': 'left-[16px] top-[16px]',
-    'right-top': 'right-[16px] top-[16px]',
+    'left-top': 'left-[16px] top-[100px]',
+    'right-top': 'right-[16px] top-[100px]',
 };
