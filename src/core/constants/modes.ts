@@ -4,15 +4,12 @@ import { TThemeKey, VisionMode } from '../types.js';
 export type SimulationMode = Exclude<VisionMode, 'none'>;
 
 export const SIMULATION_MODES: SimulationMode[] = [
-    'deuteranopia',
     'protanopia',
+    'deuteranopia',
     'tritanopia',
 ];
 
-export const THEME_MODES: TThemeKey[] = [
-    'default',
-    ...SIMULATION_MODES,
-];
+export const THEME_MODES: TThemeKey[] = ['default', ...SIMULATION_MODES];
 
 export const VISION_MODES: VisionMode[] = ['none', ...SIMULATION_MODES];
 

@@ -66,19 +66,44 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
         <ThemeSwitcherPortal>
             <div ref={wrapperRef} className="z-[10000]">
                 {/* 토글 버튼 */}
+
                 <button
                     type="button"
                     aria-haspopup="menu"
                     aria-expanded={isOpen}
                     onClick={toggle}
-                    className={`fixed w-[60px] h-[60px] p-[10px] bg-[#ffffff] rounded-full flex justify-center items-center shadow-[0_0_3px_0_rgba(0,0,0,0.17)]
+                    className={`fixed w-[60px] h-[60px] p-[10px] ${isOpen ? 'bg-[#252525] border-[1px] border-[#8144FF]' : 'bg-[rgba(129,68,255,0.2)]'} rounded-full flex justify-center items-center shadow-[0_0_3px_0_rgba(0,0,0,0.17)]
                     ${switcherClass}
                         `}
                 >
                     {isOpen ? (
-                        <XButton className="self-center" />
+                        <div className="absolute flex justify-center items-center inset-0 w-full h-full">
+                            <XButton className="self-center" width={30} />
+                        </div>
                     ) : (
-                        <Logo className="self-center" />
+                        <div
+                            className="rounded-full bg-white/2
+                            backdrop-blur-[3px]
+                            min-w-[60px] min-h-[60px]
+                            [filter:drop-shadow(0_18px_calc(60px_*_0.20)_rgba(0,0,0,calc(.55_*_0.20)))]
+                            shadow-[inset_0.5px_0.5px_0_rgba(255,255,255,calc(.35_+_.25_*_0.70)),inset_-0.5px_-0.5px_0_rgba(255,255,255,calc(.35_+_.25_*_0.70))]
+                            absolute isolate overflow-hidden
+                            "
+                        >
+                            <div className="[mask:linear-gradient(-45deg),white,transparent_40%)] pointer-events-none absolute inset-0 mix-blend-screen opacity-[calc(.50_*_0.80)]"></div>
+
+                            <div className="pointer-events-none absolute inset-0 mix-blend-screen opacity-20"></div>
+                            <div className="absolute flex justify-center items-center inset-0 w-full h-full">
+                                {isOpen ? (
+                                    <XButton
+                                        className="self-center"
+                                        width={30}
+                                    />
+                                ) : (
+                                    <Logo className="self-center" width={30} />
+                                )}
+                            </div>
+                        </div>
                     )}
                 </button>
 
@@ -88,7 +113,7 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
                         role="menu"
                         aria-label="Select theme"
                         className={`
-                            fixed flex-col bg-[#ffffff] rounded-[18px] w-[220px] gap-[11px] filter drop-shadow-[0_0_1.3px_rgba(0,0,0,0.25)]
+                            fixed flex-col bg-[#252525] px-[10px] py-[14px] border-[1px] border-[#8144FF] rounded-[18px] w-[220px] gap-[11px] filter drop-shadow-[0_0_1.3px_rgba(0,0,0,0.25)]
                             ${switcherMenuClass}
                             `}
                     >
@@ -113,9 +138,9 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
                                                 setHovered(null)
                                             }
                                             className={[
-                                                'hover:cursor-pointer group text-[18px] text-[#3D4852] py-1 w-full h-[50px] text-center gap-[8px] flex items-center justify-center rounded-[18px] hover:bg-[#3D4852]',
+                                                'hover:cursor-pointer group text-[18px] px-[15px] text-[#909090] py-1 w-full h-[50px] text-start gap-[8px] flex items-center rounded-[9px] hover:bg-[#884DFF]',
                                                 theme === opt.key
-                                                    ? 'bg-[#3D4852] text-[#ffffff]'
+                                                    ? 'bg-[#884DFF] text-[#ffffff]'
                                                     : '',
                                             ].join(' ')}
                                         >
@@ -126,39 +151,36 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
                                                     theme === opt.key ||
                                                     hovered === opt.key
                                                         ? 'text-white'
-                                                        : 'text-[#3D4852]'
+                                                        : 'text-[#909090]'
                                                 }`}
                                             />
                                             <span className="group-hover:text-[#ffffff]">
                                                 {opt.label}
                                             </span>
                                         </button>
-                                        {opt.key !== 'tritanopia' && (
-                                            <div className="border-b-[0.5px] border-b-[#D9D9D9] w-full"></div>
-                                        )}
                                     </div>
                                 );
                             })}
                         </div>
 
-                        <div className="w-full border-[0.5px] border-[#B8B8B8]" />
+                        <div className="w-full border-[0.5px] border-[#B8B8B8] mt-[8px]" />
 
-                        <div className="flex justify-evenly items-center gap-[10px] px-[10px] my-[15px]">
+                        <div className="flex justify-evenly items-center gap-[10px] px-[10px] mt-[15px]">
                             {language === 'English' ? (
                                 <div
-                                    className={`hover:cursor-pointer flex text-[18px] text-[#3D4852] gap-[8px] items-center justify-center`}
+                                    className={`hover:cursor-pointer flex text-[18px] text-[#909090] gap-[8px] items-center justify-center`}
                                     onClick={() => updateLanguage('Korean')}
                                 >
-                                    <US width={20} />
+                                    <US width={24} />
                                     English
                                 </div>
                             ) : (
                                 <div
-                                    className={`hover:cursor-pointer flex text-[18px] text-[#3D4852] gap-[8px] items-center justify-center `}
+                                    className={`hover:cursor-pointer flex text-[18px] text-[#909090] gap-[8px] items-center justify-center `}
                                     onClick={() => updateLanguage('English')}
                                 >
-                                    <KR width={20} />
-                                    Korean
+                                    <KR width={24} />
+                                    한국어
                                 </div>
                             )}
                         </div>
