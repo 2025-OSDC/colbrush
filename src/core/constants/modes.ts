@@ -9,10 +9,7 @@ export const SIMULATION_MODES: SimulationMode[] = [
     'tritanopia',
 ];
 
-export const THEME_MODES: TThemeKey[] = [
-    'default',
-    ...SIMULATION_MODES,
-];
+export const THEME_MODES: TThemeKey[] = ['default', ...SIMULATION_MODES];
 
 export const VISION_MODES: VisionMode[] = ['none', ...SIMULATION_MODES];
 
