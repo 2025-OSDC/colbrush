@@ -6,10 +6,12 @@ const CLAMP01 = (x: number) => Math.max(0, Math.min(1, x));
 
 type ColorCtor = typeof ColorModule;
 
-const Color = ((ColorModule as unknown as { default?: ColorCtor }).default ?? ColorModule) as ColorCtor;
+const Color = ((ColorModule as unknown as { default?: ColorCtor }).default ??
+    ColorModule) as ColorCtor;
 
-function hexToOKLCH(hex: string) {
-    const c = new Color(hex);
+function hexToOKLCH(color: string) {
+    const normalizedColor = color.replace(/,(?=\s*\d)/g, ' ');
+    const c = new Color(normalizedColor);
     const o = c.to('oklch');
     return { l: o.l, c: o.c, h: o.h ?? 0 };
 }
