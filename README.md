@@ -2,7 +2,7 @@
 
 #### A React theme switching library that makes it easy to apply color-blind accessible UI themes.
 
-<img width="1434" height="314" alt="스크린샷 2025-10-27 오전 9 05 44" src="https://github.com/user-attachments/assets/c009bd8c-974c-4e99-b28b-86acb9df26d9" />
+<img width="1434" height="314" alt="colbrush" src="https://github.com/user-attachments/assets/c009bd8c-974c-4e99-b28b-86acb9df26d9" />
 
 ---
 
@@ -236,3 +236,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
