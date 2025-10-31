@@ -1,4 +1,8 @@
 import { defineConfig } from 'tsup';
+import { readFileSync } from 'fs';
+
+const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
+
 export default defineConfig([
     // Browser 엔트리 (라이브러리)
     {
@@ -40,5 +44,8 @@ export default defineConfig([
         outExtension: ({ format }) => ({
             js: format === 'cjs' ? '.cjs' : '.js',
         }),
+        define: {
+            'process.env.COLBRUSH_VERSION': JSON.stringify(packageJson.version),
+        },
     },
 ]);
