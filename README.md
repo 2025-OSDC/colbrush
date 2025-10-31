@@ -213,6 +213,19 @@ For more details, visit the **[👉 Colbrush Official Website](https://www.colbr
 | **윤수호**                                                                               | **노하영**                                                                                  | [**김연진**](https://github.com/yeonjin719)                                                 | [**윤혜성**](https://github.com/hyesngy)                                                     | [**이준희**](https://github.com/jjjuni)                                                    |
 | PM                                                                                       | Designer                                                                                    | Frontend · Library Engineer                                                                 | Frontend · Library Engineer                                                                  | Frontend · Library Engineer                                                                |
 
+## 🤝 Contributing
+
+We welcome contributions from the community! Colbrush is an open-source project, and we'd love your help to make it better.
+
+### How to Contribute
+
+- 🐛 **Report bugs** - Found a bug? [Open an issue](https://github.com/2025-OSDC/colbrush/issues)
+- ✨ **Suggest features** - Have an idea? [Share it with us](https://github.com/2025-OSDC/colbrush/issues)
+- 📝 **Improve documentation** - Help us make our docs better
+- 💻 **Submit pull requests** - Fix bugs or add new features
+
+Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information on how to contribute.
+
 ## 📜 License
 
 MIT License
