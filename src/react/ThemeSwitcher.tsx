@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useTheme, getThemeOptions, type ThemeKey } from './ThemeProvider.js';
 import Logo from '../icons/Logo.js';
 import US from '../icons/Us.js';
@@ -38,6 +38,7 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
     );
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const menuId = useId();
 
     const switcherClass = SWITCHER_POSITION[position ?? 'right-bottom'];
     const switcherMenuClass =
@@ -62,6 +63,15 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
         setIsOpen((prev) => !prev);
     };
 
+    const toggleAriaLabel =
+        language === 'Korean'
+            ? isOpen
+                ? '테마 전환 메뉴 닫기'
+                : '테마 전환 메뉴 열기'
+            : isOpen
+              ? 'Close theme switcher menu'
+              : 'Open theme switcher menu';
+
     return (
         <ThemeSwitcherPortal>
             <div ref={wrapperRef} className="z-[10000]">
@@ -71,6 +81,8 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
                     type="button"
                     aria-haspopup="menu"
                     aria-expanded={isOpen}
+                    aria-controls={menuId}
+                    aria-label={toggleAriaLabel}
                     onClick={toggle}
                     className={`fixed w-[60px] h-[60px] p-[10px] ${isOpen ? 'bg-[#252525] border-[1px] border-[#8144FF]' : 'bg-[rgba(129,68,255,0.2)]'} rounded-full flex justify-center items-center shadow-[0_0_3px_0_rgba(0,0,0,0.17)]
                     ${switcherClass}
@@ -78,7 +90,11 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
                 >
                     {isOpen ? (
                         <div className="absolute flex justify-center items-center inset-0 w-full h-full">
-                            <XButton className="self-center" width={30} />
+                            <XButton
+                                aria-hidden="true"
+                                className="self-center"
+                                width={30}
+                            />
                         </div>
                     ) : (
                         <div
@@ -96,11 +112,16 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
                             <div className="absolute flex justify-center items-center inset-0 w-full h-full">
                                 {isOpen ? (
                                     <XButton
+                                        aria-hidden="true"
                                         className="self-center"
                                         width={30}
                                     />
                                 ) : (
-                                    <Logo className="self-center" width={30} />
+                                    <Logo
+                                        aria-hidden="true"
+                                        className="self-center"
+                                        width={30}
+                                    />
                                 )}
                             </div>
                         </div>
@@ -112,6 +133,7 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
                     <div
                         role="menu"
                         aria-label="Select theme"
+                        id={menuId}
                         className={`
                             fixed flex-col bg-[#252525] px-[10px] py-[14px] border-[1px] border-[#8144FF] rounded-[18px] w-[220px] gap-[11px] filter drop-shadow-[0_0_1.3px_rgba(0,0,0,0.25)]
                             ${switcherMenuClass}
@@ -167,21 +189,23 @@ export function ThemeSwitcher({ options, position }: TThemeSwitcherProps) {
 
                         <div className="flex justify-evenly items-center gap-[10px] px-[10px] mt-[15px]">
                             {language === 'English' ? (
-                                <div
-                                    className={`hover:cursor-pointer flex text-[18px] text-[#909090] gap-[8px] items-center justify-center`}
+                                <button
+                                    type="button"
+                                    className="hover:cursor-pointer flex text-[18px] text-[#909090] gap-[8px] items-center justify-center"
                                     onClick={() => updateLanguage('Korean')}
                                 >
                                     <US width={24} />
                                     English
-                                </div>
+                                </button>
                             ) : (
-                                <div
-                                    className={`hover:cursor-pointer flex text-[18px] text-[#909090] gap-[8px] items-center justify-center `}
+                                <button
+                                    type="button"
+                                    className="hover:cursor-pointer flex text-[18px] text-[#909090] gap-[8px] items-center justify-center "
                                     onClick={() => updateLanguage('English')}
                                 >
                                     <KR width={24} />
                                     한국어
-                                </div>
+                                </button>
                             )}
                         </div>
                     </div>
