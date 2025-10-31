@@ -8,6 +8,8 @@ import { showHelp } from './help.js';
 import fs from 'node:fs';
 import path from 'node:path';
 
+const VERSION = process.env.COLBRUSH_VERSION || 'unknown';
+
 async function main() {
     const flags = parseFlags();
     const progress = createCliProgress();
@@ -15,13 +17,7 @@ async function main() {
     
     try {
         if (flags.version) {
-            const packagePath = path.join(process.cwd(), 'package.json');
-            if (fs.existsSync(packagePath)) {
-                const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-                console.log(`🎨 Colbrush v${packageJson.version}`);
-            } else {
-                console.log('🎨 Colbrush CLI');
-            }
+            console.log(`🎨 Colbrush v${VERSION}`);
             process.exit(0);
         }
 
