@@ -61,24 +61,19 @@ export default function App() {
                 <div className="pointer-events-none absolute inset-0 -z-10 opacity-70 blur-3xl [background:conic-gradient(at_20%_20%,rgba(59,130,246,0.35),rgba(99,102,241,0.15),transparent_70%)]" />
 
                 <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12">
-                    <section className="grid gap-10 lg:grid-cols-[minmax(320px,1fr)_minmax(0,1.8fr)]">
-                        <aside className="flex flex-col gap-6 lg:sticky lg:top-12 lg:self-start">
-                            <ThemeStatus />
-                        </aside>
-
-                        <div className="space-y-6">
-                            <div className="grid gap-6 grid-cols-3">
-                                {tests.map((test) => (
-                                    <TestWrapper
-                                        key={test.key}
-                                        title={test.title}
-                                        description={test.description}
-                                        badge={test.badge}
-                                    >
-                                        {test.render()}
-                                    </TestWrapper>
-                                ))}
-                            </div>
+                    <section className="flex gap-6 flex-col">
+                        <ThemeStatus />
+                        <div className="flex flex-wrap w-full justify-between gap-6 h-[500px]">
+                            {tests.map((test) => (
+                                <TestWrapper
+                                    key={test.key}
+                                    title={test.title}
+                                    description={test.description}
+                                    badge={test.badge}
+                                >
+                                    {test.render()}
+                                </TestWrapper>
+                            ))}
                         </div>
                     </section>
                 </div>

@@ -11,7 +11,7 @@ export default function TestWrapper({
 }) {
     return (
         <section
-            className="relative flex h-full flex-col gap-5 rounded-3xl border border-white/15 bg-[#0f172a]/80 p-6 text-white shadow-[0_18px_48px_rgba(15,23,42,0.4)] backdrop-blur-xl transition-all duration-200 hover:border-white/25"
+            className="relative flex h-full md:max-w-[31%] w-full flex-col gap-5 rounded-3xl border border-white/15 bg-[#0f172a]/80 p-6 text-white shadow-[0_18px_48px_rgba(15,23,42,0.4)] backdrop-blur-xl transition-all duration-200 hover:border-white/25"
             aria-live="polite"
         >
             <header className="space-y-3">

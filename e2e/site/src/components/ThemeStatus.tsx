@@ -19,8 +19,8 @@ function ThemeStatus() {
                             Colbrush E2E Playground
                         </h1>
                         <p className="mt-2 text-sm text-white/80">
-                            ThemeProvider가 노출하는 현재 컨텍스트 값을 실시간으로
-                            확인하세요.
+                            ThemeProvider가 노출하는 현재 컨텍스트 값을
+                            실시간으로 확인하세요.
                         </p>
                     </div>
                 </div>
@@ -50,8 +50,9 @@ function ThemeStatus() {
 
             <p className="mt-8 text-sm leading-relaxed text-white/85">
                 Theme Switcher 또는 Simulation Filter에서 옵션을 변경할 때마다
-                본 카드의 값이 즉시 갱신되어 E2E 테스트의 단일 기준점 역할을 합니다.
-                값이 예상과 다르면 전역 상태 또는 포털 위치를 먼저 점검하세요.
+                본 카드의 값이 즉시 갱신되어 E2E 테스트의 단일 기준점 역할을
+                합니다. 값이 예상과 다르면 전역 상태 또는 포털 위치를 먼저
+                점검하세요.
             </p>
         </section>
     );
