@@ -1,19 +1,41 @@
 export default function TestWrapper({
     children,
     title,
+    description,
+    badge = 'Vision Simulation',
 }: {
     children: React.ReactNode;
     title?: string;
+    description?: string;
+    badge?: string;
 }) {
     return (
         <section
-            className="w-full flex flex-col gap-5 rounded-3xl border border-white/10 bg-white/10 p-6 shadow-xl backdrop-blur-xl ring-1 ring-white/15 dark:bg-black/30"
+            className="relative flex h-full flex-col gap-5 rounded-3xl border border-white/15 bg-[#0f172a]/80 p-6 text-white shadow-[0_18px_48px_rgba(15,23,42,0.4)] backdrop-blur-xl transition-all duration-200 hover:border-white/25"
             aria-live="polite"
         >
-            {children}
-            <span className="w-fit self-center items-center rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-sm font-medium tracking-tight text-white/90 shadow-sm backdrop-blur transition hover:bg-white/10 dark:text-white/90">
-                {title}
-            </span>
+            <header className="space-y-3">
+                <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white">
+                    {badge}
+                </span>
+                {title && (
+                    <h2 className="text-xl font-semibold leading-tight text-white">
+                        {title}
+                    </h2>
+                )}
+            </header>
+
+            <figure className="flex min-h-[220px] flex-1 items-center justify-center overflow-hidden rounded-2xl border border-white/15 bg-black/25 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
+                <div className="grid h-full w-full place-items-center text-white">
+                    {children}
+                </div>
+            </figure>
+
+            {description && (
+                <p className="text-sm leading-relaxed text-white/92">
+                    {description}
+                </p>
+            )}
         </section>
     );
 }

@@ -8,7 +8,7 @@ function Chip({
     return (
         <span
             data-testid={testId}
-            className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-sm font-medium tracking-tight text-white/90 shadow-sm backdrop-blur transition hover:bg-white/10 dark:text-white/90"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-semibold text-[#0b1729] shadow-[0_8px_20px_rgba(15,23,42,0.25)] transition-colors duration-200 hover:bg-white/90"
         >
             {children}
         </span>

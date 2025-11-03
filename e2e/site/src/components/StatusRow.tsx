@@ -10,9 +10,11 @@ function StatusRow({
     testId?: string;
 }) {
     return (
-        <div className="flex items-center justify-between gap-4 rounded-xl bg-white/3 p-3 ring-1 ring-white/10">
-            <dt className="text-sm font-medium text-white/80">{label}</dt>
-            <dd className="text-right">
+        <div className="flex flex-col gap-3 rounded-2xl border border-white/20 bg-white/8 px-4 py-4 shadow-[0_12px_24px_rgba(15,23,42,0.35)] transition hover:border-white/30 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-white/75">
+                {label}
+            </dt>
+            <dd className="text-base font-semibold text-white sm:text-right">
                 <Chip testId={testId}>{value}</Chip>
             </dd>
         </div>
