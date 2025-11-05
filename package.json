@@ -54,7 +54,11 @@
         "build": "pnpm svgr && tsup --config tsup.config.ts && pnpm build:css",
         "dev": "tsup --config tsup.config.ts --watch",
         "prepublishOnly": "pnpm build",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "test:e2e:site": "node ./scripts/run-site-e2e.mjs",
+        "test:e2e:cli:smoke": "node ./scripts/run-cli-smoke.mjs",
+        "test:e2e:cli": "pnpm --dir e2e/cli test",
+        "test": "pnpm --silent test:e2e:cli && pnpm --silent test:e2e:cli:smoke && pnpm --silent test:e2e:site"
     },
     "keywords": [],
     "author": "TEAM ColorBrush",

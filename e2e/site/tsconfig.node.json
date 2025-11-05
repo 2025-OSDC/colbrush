@@ -1,0 +1,13 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "noEmit": true
+    },
+    "include": [
+        "vite.config.ts",
+        "playwright.config.ts"
+    ]
+}

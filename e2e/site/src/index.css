@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@import "colbrush/styles.css";
+
+@theme {
+  --color-primary-500: #64d2ff;
+  --color-primary-700: #287cff;
+  --color-accent-500: #ff9f7a;
+  --color-accent-700: #ff6d51;
+  --color-surface-500: #0f1f3a;
+  --color-surface-700: #08132a;
+  --color-foreground-500: #f7faff;
+  --color-foreground-muted: rgba(230, 236, 255, 0.76);
+  
+  --color-protanopia-a: #a34245;
+  --color-protanopia-b: #7e464a;
+  --color-protanopia-sub-a: #275841;
+  --color-protanopia-sub-b: #455c4e;
+  --color-protanopia-sub-c: #525856;
+  
+  --color-deuteranopia-a: #11724d;
+  --color-deuteranopia-b: #5a7d6e;
+  --color-deuteranopia-sub-a: #b84f47;
+  --color-deuteranopia-sub-b: #a04d4d;
+  --color-deuteranopia-sub-c: #6b6363;
+  
+  --color-tritanopia-a: #7287e4;
+  --color-tritanopia-b: #627cac;
+  --color-tritanopia-sub-a: #5ba192;
+  --color-tritanopia-sub-b: #4da08b;
+  --color-tritanopia-sub-c: #4c7e71;
+}
+
+[data-theme='deuteranopia']{
+  --color-primary-500: #8677c2;
+  --color-primary-700: #5b4c8f;
+  --color-accent-500: #ff6b00;
+  --color-accent-700: #c53e00;
+  --color-surface-500: #121222;
+  --color-surface-700: #000003;
+  --color-foreground-500: #f2faff;
+  --color-foreground-muted: rgba(230, 236, 255, 0.76);
+  --color-protanopia-a: #aa4000;
+  --color-protanopia-b: #864405;
+  --color-protanopia-sub-a: #005a77;
+  --color-protanopia-sub-b: #2d5d6b;
+  --color-protanopia-sub-c: #4e585d;
+  --color-deuteranopia-a: #0076a7;
+  --color-deuteranopia-b: #327f96;
+  --color-deuteranopia-sub-a: #bf4d00;
+  --color-deuteranopia-sub-b: #a84b00;
+  --color-deuteranopia-sub-c: #6e635b;
+  --color-tritanopia-a: #9884b5;
+  --color-tritanopia-b: #6a7ba3;
+  --color-tritanopia-sub-a: #00a4d6;
+  --color-tritanopia-sub-b: #00a4dc;
+  --color-tritanopia-sub-c: #0080a4;
+}
+
+[data-theme='protanopia']{
+  --color-primary-500: #8677c2;
+  --color-primary-700: #5b4c8f;
+  --color-accent-500: #ff6b00;
+  --color-accent-700: #c53e00;
+  --color-surface-500: #121222;
+  --color-surface-700: #000003;
+  --color-foreground-500: #f2faff;
+  --color-foreground-muted: rgba(230, 236, 255, 0.76);
+  --color-protanopia-a: #aa4000;
+  --color-protanopia-b: #864405;
+  --color-protanopia-sub-a: #005a77;
+  --color-protanopia-sub-b: #2d5d6b;
+  --color-protanopia-sub-c: #4e585d;
+  --color-deuteranopia-a: #0076a7;
+  --color-deuteranopia-b: #327f96;
+  --color-deuteranopia-sub-a: #bf4d00;
+  --color-deuteranopia-sub-b: #a84b00;
+  --color-deuteranopia-sub-c: #6e635b;
+  --color-tritanopia-a: #9884b5;
+  --color-tritanopia-b: #6a7ba3;
+  --color-tritanopia-sub-a: #00a4d6;
+  --color-tritanopia-sub-b: #00a4dc;
+  --color-tritanopia-sub-c: #0080a4;
+}
+
+[data-theme='tritanopia']{
+  --color-primary-500: #be41ff;
+  --color-primary-700: #8c00c5;
+  --color-accent-500: #d38b4e;
+  --color-accent-700: #9f5f24;
+  --color-surface-500: #1e0b2a;
+  --color-surface-700: #020006;
+  --color-foreground-500: #fcf7ff;
+  --color-foreground-muted: rgba(230, 236, 255, 0.76);
+  --color-protanopia-a: #914f44;
+  --color-protanopia-b: #764b4a;
+  --color-protanopia-sub-a: #0d5a41;
+  --color-protanopia-sub-b: #3d5e4e;
+  --color-protanopia-sub-c: #525856;
+  --color-deuteranopia-a: #00754d;
+  --color-deuteranopia-b: #537e6e;
+  --color-deuteranopia-sub-a: #9f6046;
+  --color-deuteranopia-sub-b: #90574c;
+  --color-deuteranopia-sub-c: #6a6363;
+  --color-tritanopia-a: #bf67e5;
+  --color-tritanopia-b: #8e6eac;
+  --color-tritanopia-sub-a: #59a192;
+  --color-tritanopia-sub-b: #44a18b;
+  --color-tritanopia-sub-c: #487f71;
+}
+

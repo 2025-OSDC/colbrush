@@ -1,5 +1,9 @@
 node_modules/
 dist/
+tmp/
+test-results/
+playwright-report/
+e2e/site/playwright-report/
 .env
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,macos,windows
