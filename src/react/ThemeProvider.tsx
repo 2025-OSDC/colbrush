@@ -1,6 +1,13 @@
 'use client';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useState,
+} from 'react';
 import { VisionMode } from '../types/simulationTypes.js';
 import { THEME_LABEL, THEME_MODES } from '../core/constants/modes.js';
 import { TThemeKey } from '../core/types.js';
@@ -37,6 +44,9 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const useTheme = () => useContext(ThemeContext);
 
+const useSafeLayoutEffect =
+    typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 function normalizeToKey(value: string | null): ThemeKey {
     if (!value) return 'default';
     if ((THEME_MODES as readonly string[]).includes(value))
@@ -61,7 +71,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         useState<SimulationKey>('none');
     const [language, setLanguage] = useState<TLanguage>('English');
 
-    useEffect(() => {
+    useSafeLayoutEffect(() => {
         if (typeof window === 'undefined') return;
         const storedTheme = normalizeToKey(
             localStorage.getItem(ThemeStorageKey)

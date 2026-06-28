@@ -99,6 +99,27 @@ function App() {
 }
 ```
 
+#### Prevent theme flash
+
+Add `ThemeScript` before the first paint to apply the saved theme without a flash. `ThemeProvider` keeps React state in sync after the app starts.
+
+```
+import { ThemeProvider, ThemeScript } from 'colbrush/client';
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
 ### 4. Import colbrush/styles.css
 
 ```
