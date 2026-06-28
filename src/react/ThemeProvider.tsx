@@ -63,6 +63,20 @@ function normalizeToKey(value: string | null): ThemeKey {
     return reverse[value] ?? 'default';
 }
 
+function getStorageItem(key: string) {
+    try {
+        return typeof window === 'undefined' ? null : localStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function setStorageItem(key: string, value: string) {
+    try {
+        localStorage.setItem(key, value);
+    } catch {}
+}
+
 type ThemeProviderProps = { children: ReactNode };
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
@@ -73,14 +87,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
     useSafeLayoutEffect(() => {
         if (typeof window === 'undefined') return;
-        const storedTheme = normalizeToKey(
-            localStorage.getItem(ThemeStorageKey)
-        );
+        const storedTheme = normalizeToKey(getStorageItem(ThemeStorageKey));
         const storedLang =
-            (localStorage.getItem(LanguageStorageKey) as TLanguage) ||
-            'English';
-        const storedFilter =
-            localStorage.getItem(SimulationStorageKey) || 'none';
+            (getStorageItem(LanguageStorageKey) as TLanguage) || 'English';
+        const storedFilter = getStorageItem(SimulationStorageKey) || 'none';
 
         setSimulationFilter(storedFilter as SimulationKey);
         setTheme(storedTheme);
@@ -91,7 +101,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const updateTheme = (k: ThemeKey) => {
         setTheme(k);
         if (typeof window !== 'undefined') {
-            localStorage.setItem(ThemeStorageKey, k);
+            setStorageItem(ThemeStorageKey, k);
             document.documentElement.setAttribute('data-theme', k);
         }
     };
@@ -99,7 +109,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const updateLanguage = (t: TLanguage) => {
         setLanguage(t);
         if (typeof window !== 'undefined') {
-            localStorage.setItem(LanguageStorageKey, t);
+            setStorageItem(LanguageStorageKey, t);
         }
     };
 
