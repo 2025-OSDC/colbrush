@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI
 
 on:
   push:
@@ -7,19 +7,15 @@ on:
     branches: [master]
 
 jobs:
-  test-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
-      packages: write
-      id-token: write
+      contents: read
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -38,79 +34,3 @@ jobs:
 
       - name: Run build
         run: pnpm build
-
-      - name: Setup Git config
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        run: |
-          git config --local user.email "tell280210@gmail.com"
-          git config --local user.name "Colbrush Bot"
-
-      - name: Analyze commits and auto version
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        run: |
-          COMMIT_COUNT=$(git rev-list --count HEAD)
-
-          if [ "$COMMIT_COUNT" -gt 10 ]; then
-            COMMITS=$(git log --pretty=format:"%s" HEAD~10..HEAD)
-          else
-            COMMITS=$(git log --pretty=format:"%s" HEAD)
-          fi
-
-          echo "Analyzing commits:"
-          echo "$COMMITS"
-
-          VERSION_TYPE="patch"  # default
-
-          # MAJOR 
-          if echo "$COMMITS" | grep -qiE "(BREAKING|💥)"; then
-            VERSION_TYPE="major"
-            echo "🚨 Breaking change detected - MAJOR version bump"
-          # MINOR
-          elif echo "$COMMITS" | grep -qiE "feat"; then
-            VERSION_TYPE="minor"
-            echo "✨ New feature detected - MINOR version bump"
-          # PATCH
-          elif echo "$COMMITS" | grep -qiE "fix"; then
-            VERSION_TYPE="patch"
-            echo "🐛 Bug fix detected - PATCH version bump"
-          # 기타 변경사항 (PATCH)
-          else
-            VERSION_TYPE="patch"
-            echo "📝 Other changes detected - PATCH version bump"
-          fi
-
-          # 현재 버전 확인
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          echo "Current version: $CURRENT_VERSION"
-
-          # 자동 버전 업데이트
-          npm version $VERSION_TYPE --no-git-tag-version
-
-          # 새 버전 확인
-          NEW_VERSION=$(node -p "require('./package.json').version")
-          echo "New version: $NEW_VERSION"
-
-          # 변경사항 커밋
-          git add package.json
-          git commit -m "🔖 Auto bump $VERSION_TYPE version to v$NEW_VERSION" || exit 0
-
-          # Git 태그 생성
-          if git rev-parse "v${NEW_VERSION}" >/dev/null 2>&1; then
-            echo "Tag v${NEW_VERSION} already exists. Skipping tag creation."
-          else
-            git tag "v${NEW_VERSION}"
-            echo "✅ Created tag v${NEW_VERSION}"
-          fi
-
-          # 원격 저장소에 푸시 (태그 포함)
-          git push origin master --tags
-
-          # npm에 배포
-          echo "Publishing version $NEW_VERSION to npm..."
-          pnpm publish --no-git-checks
-
-          echo "✅ Successfully published v$NEW_VERSION to npm!"
-
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
