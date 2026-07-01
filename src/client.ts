@@ -8,4 +8,5 @@ export {
     type ThemeType,
     type TLanguage,
 } from './react/ThemeProvider.js';
+export { ThemeScript } from './react/ThemeScript.js';
 export { ThemeSwitcher } from './react/ThemeSwitcher.js';

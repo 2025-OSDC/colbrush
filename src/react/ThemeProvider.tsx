@@ -1,6 +1,13 @@
 'use client';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useState,
+} from 'react';
 import { VisionMode } from '../types/simulationTypes.js';
 import { THEME_LABEL, THEME_MODES } from '../core/constants/modes.js';
 import { TThemeKey } from '../core/types.js';
@@ -37,6 +44,9 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const useTheme = () => useContext(ThemeContext);
 
+const useSafeLayoutEffect =
+    typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 function normalizeToKey(value: string | null): ThemeKey {
     if (!value) return 'default';
     if ((THEME_MODES as readonly string[]).includes(value))
@@ -53,6 +63,20 @@ function normalizeToKey(value: string | null): ThemeKey {
     return reverse[value] ?? 'default';
 }
 
+function getStorageItem(key: string) {
+    try {
+        return typeof window === 'undefined' ? null : localStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function setStorageItem(key: string, value: string) {
+    try {
+        localStorage.setItem(key, value);
+    } catch {}
+}
+
 type ThemeProviderProps = { children: ReactNode };
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
@@ -61,16 +85,12 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         useState<SimulationKey>('none');
     const [language, setLanguage] = useState<TLanguage>('English');
 
-    useEffect(() => {
+    useSafeLayoutEffect(() => {
         if (typeof window === 'undefined') return;
-        const storedTheme = normalizeToKey(
-            localStorage.getItem(ThemeStorageKey)
-        );
+        const storedTheme = normalizeToKey(getStorageItem(ThemeStorageKey));
         const storedLang =
-            (localStorage.getItem(LanguageStorageKey) as TLanguage) ||
-            'English';
-        const storedFilter =
-            localStorage.getItem(SimulationStorageKey) || 'none';
+            (getStorageItem(LanguageStorageKey) as TLanguage) || 'English';
+        const storedFilter = getStorageItem(SimulationStorageKey) || 'none';
 
         setSimulationFilter(storedFilter as SimulationKey);
         setTheme(storedTheme);
@@ -81,7 +101,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const updateTheme = (k: ThemeKey) => {
         setTheme(k);
         if (typeof window !== 'undefined') {
-            localStorage.setItem(ThemeStorageKey, k);
+            setStorageItem(ThemeStorageKey, k);
             document.documentElement.setAttribute('data-theme', k);
         }
     };
@@ -89,7 +109,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const updateLanguage = (t: TLanguage) => {
         setLanguage(t);
         if (typeof window !== 'undefined') {
-            localStorage.setItem(LanguageStorageKey, t);
+            setStorageItem(LanguageStorageKey, t);
         }
     };
 
