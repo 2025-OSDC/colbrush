@@ -60,7 +60,9 @@ jobs:
           fi
 
           npm version "$VERSION_TYPE" -m "chore: bump version to v%s"
-          git push origin HEAD:master --follow-tags
 
       - name: Publish to npm
         run: npm publish --provenance
+
+      - name: Push version commit and tag
+        run: git push origin HEAD:master --follow-tags
