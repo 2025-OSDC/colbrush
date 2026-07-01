@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -30,6 +32,28 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Bump version
+        run: |
+          git config --local user.email "tell280210@gmail.com"
+          git config --local user.name "Colbrush Bot"
+
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)
+          if [ -n "$LAST_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"%s" "$LAST_TAG"..HEAD)
+          else
+            COMMITS=$(git log --pretty=format:"%s")
+          fi
+          VERSION_TYPE="patch"
+
+          if echo "$COMMITS" | grep -qiE "(BREAKING|💥)"; then
+            VERSION_TYPE="major"
+          elif echo "$COMMITS" | grep -qiE "feat"; then
+            VERSION_TYPE="minor"
+          fi
+
+          npm version "$VERSION_TYPE" -m "chore: bump version to v%s"
+          git push origin HEAD:master --follow-tags
 
       - name: Publish to npm
         run: npm publish --provenance
