@@ -24,6 +24,7 @@
         - `updateTheme(theme: ThemeType)`: update the current theme (supports color-blind modes)
         - `language`: current language setting (currently supports **Korean** and **English**)
         - `updateLanguage(language: TLanguage)`: update the language context
+
 - 🧪 Customizable color scales and transformation algorithms
 
 ---
@@ -99,9 +100,24 @@ function App() {
 }
 ```
 
-#### Prevent theme flash
+In CSR apps such as Vite, `ThemeProvider` is usually enough to reduce theme flash. Use it as the default setup.
 
-Add `ThemeScript` before the first paint to apply the saved theme without a flash. `ThemeProvider` keeps React state in sync after the app starts.
+If a CSR app still flashes because the JavaScript bundle loads late, add the same early theme script to `index.html`:
+
+```
+<head>
+  <script>
+    try {
+      var t = localStorage.getItem('colbrush-theme');
+      if (['default', 'protanopia', 'deuteranopia', 'tritanopia'].indexOf(t) > -1) {
+        document.documentElement.setAttribute('data-theme', t);
+      }
+    } catch (e) {}
+  </script>
+</head>
+```
+
+For SSR apps, or when you need strict first-paint theme protection, render `ThemeScript` inside `<head>`:
 
 ```
 import { ThemeProvider, ThemeScript } from 'colbrush/client';
@@ -270,4 +286,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
