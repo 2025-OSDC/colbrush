@@ -1,6 +1,8 @@
 name: Publish npm
 
 on:
+  push:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -10,7 +12,12 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: >-
+      github.ref == 'refs/heads/master' &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        startsWith(github.event.head_commit.message, 'chore: bump version') == false
+      )
 
     steps:
       - name: Checkout code
@@ -53,7 +60,9 @@ jobs:
           fi
 
           npm version "$VERSION_TYPE" -m "chore: bump version to v%s"
-          git push origin HEAD:master --follow-tags
 
       - name: Publish to npm
         run: npm publish --provenance
+
+      - name: Push version commit and tag
+        run: git push origin HEAD:master --follow-tags
